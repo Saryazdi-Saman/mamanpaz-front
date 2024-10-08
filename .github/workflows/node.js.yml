@@ -65,7 +65,7 @@ jobs:
       - name: Check available ports
         run: |
           # Check available ports and kill existing PM2 processes on those ports
-          AVAILABLE_PORTS=$(check-active-container)
+          AVAILABLE_PORTS=$(/home/frontend-mamanpaz/bin/check-active-container)
           # Split the available ports and check for any PM2 processes using them
           for port in $(echo "$AVAILABLE_PORTS" | tr "," "\n"); do
             if pm2 list | grep -q "$port"; then
