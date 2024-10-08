@@ -1,0 +1,85 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+# name: Node.js CI
+
+# on:
+#   push:
+#     branches: [ "main" ]
+
+# jobs:
+#   build:
+
+#     runs-on: self-hosted
+
+#     strategy:
+#       matrix:
+#         node-version: [20.18.0]
+#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Use Node.js ${{ matrix.node-version }}
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#         cache: 'npm'
+#     - run: npm ci
+#     - run: npm run build --if-present
+#     # - run: npm test
+
+name: Deploy new versions
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Extract Tag Name
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Tag: $TAG_NAME"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Create folder for tag and change directory
+        run: |
+          mkdir -p ${{ env.TAG_NAME }}
+
+      - name: Checkout the code at the tag
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure we fetch all history to access the tag
+          path: ${{ env.TAG_NAME }}  # Use the environment variable for the path
+          
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '18'
+  
+      - name: Check available ports
+        run: |
+          # Check available ports and kill existing PM2 processes on those ports
+          AVAILABLE_PORTS=$(check-active-container)
+          # Split the available ports and check for any PM2 processes using them
+          for port in $(echo "$AVAILABLE_PORTS" | tr "," "\n"); do
+            if pm2 list | grep -q "$port"; then
+              echo "Killing process on port $port"
+              pm2 delete $(pm2 list | grep "$port" | awk '{print $2}')
+            fi
+          done
+      
+      - name: Install dependencies
+        run: |
+          cd ${{ env.TAG_NAME }}
+
+      - name: Run deployment scripts
+        run: |
+          cd ${{ env.TAG_NAME }}
+          npm ci
+          # Start the app using the second script
+          mamanpaz-front-start
