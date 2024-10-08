@@ -82,7 +82,7 @@ jobs:
       - name: Run deployment scripts
         run: |
           cd ${{ env.TAG_NAME }}
-          echo pwd
+          pwd
           npm ci
           # Start the app using the second script
           ~/bin/mamanpaz-front-start
