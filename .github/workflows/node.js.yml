@@ -84,4 +84,4 @@ jobs:
           cd ${{ env.TAG_NAME }}
           npm ci
           # Start the app using the second script
-          /home/frontend-mamanpaz/bin/mamanpaz-front-start
+          ~/bin/mamanpaz-front-start
