@@ -82,7 +82,7 @@ jobs:
       - name: Run deployment scripts
         run: |
           cd ${{ env.TAG_NAME }}
-          TARGET_PATH = $(pwd)
+          TARGET_PATH=$(pwd)
           echo "Target Path: $TARGET_PATH"
           npm ci
           # Start the app using the second script
