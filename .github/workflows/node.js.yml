@@ -85,5 +85,6 @@ jobs:
           TARGET_PATH=$(pwd)
           echo "Target Path: $TARGET_PATH"
           npm ci
+          npm run build
           # Start the app using the second script
           ~/bin/mamanpaz-front-start $TARGET_PATH
