@@ -82,7 +82,8 @@ jobs:
       - name: Run deployment scripts
         run: |
           cd ${{ env.TAG_NAME }}
-          pwd
+          TARGET_PATH = $(pwd)
+          echo "Target Path: $TARGET_PATH"
           npm ci
           # Start the app using the second script
-          ~/bin/mamanpaz-front-start
+          ~/bin/mamanpaz-front-start $TARGET_PATH
