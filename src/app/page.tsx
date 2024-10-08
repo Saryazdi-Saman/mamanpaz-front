@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Logo from "@/app/assets/logo.svg";
-import patterns from "@/app/assets/pattern2.svg";
 import { headingFont } from "./fonts";
 
 export default function Home() {
