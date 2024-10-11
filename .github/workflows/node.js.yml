@@ -31,10 +31,11 @@
 name: Deploy new versions
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow from the Actions tab
   push:
-    tags:
-      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
+    branches:
+#      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
+      - 'main'  # This will trigger only on pushes to the main branch
 
 jobs:
   deploy:
