@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
-        serverComponentsExternalPackages: ['winston', 'winston-loki'],
+        instrumentationHook: true,
+        // serverComponentsExternalPackages: ['winston', 'winston-loki'],
       },
 };
 
