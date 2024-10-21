@@ -66,7 +66,14 @@ jobs:
           for port in $(echo "${{ env.AVAILABLE_PORTS }}" | tr "," "\n"); do
             if pm2 list | grep -q "$port"; then
               echo "Killing process on port $port"
-              pm2 delete $(pm2 list | grep "$port" | awk '{print $2}')
+              PM2_PROCESS=$(pm2 list | grep "$port" | awk '{print $2}')
+              if [ ! -z "$PM2_PROCESS" ]; then
+                pm2 delete $PM2_PROCESS || echo "Failed to delete process on port $port"
+              else
+                echo "No PM2 process found for port $port"
+              fi
+            else
+              echo "No active process on port $port"
             fi
           done
 
