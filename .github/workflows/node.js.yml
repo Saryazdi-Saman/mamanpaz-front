@@ -31,61 +31,60 @@
 name: Deploy new versions
 
 on:
-  workflow_dispatch: # Allows manual triggering of the workflow from the Actions tab
+  workflow_dispatch:
   push:
     branches:
-#      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
-      - 'main'  # This will trigger only on pushes to the main branch
+      - 'main'
 
 jobs:
   deploy:
     runs-on: self-hosted
 
     steps:
-      - name: Extract Tag Name
+      - name: Detect active and available containers
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "Tag: $TAG_NAME"
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          OUTPUT=$(~/bin/check-active-container)
+          ACTIVE_CONTAINER=$(echo "$OUTPUT" | grep "Active container:" | cut -d ':' -f 2 | xargs)
+          AVAILABLE_CONTAINER=$(echo "$OUTPUT" | grep "Available container:" | cut -d ':' -f 2 | xargs)
+          AVAILABLE_PORTS=$(echo "$OUTPUT" | grep "Ports to use" | cut -d ':' -f 2 | xargs)
+          echo "ACTIVE_CONTAINER=$ACTIVE_CONTAINER" >> $GITHUB_ENV
+          echo "AVAILABLE_CONTAINER=$AVAILABLE_CONTAINER" >> $GITHUB_ENV
+          echo "AVAILABLE_PORTS=$AVAILABLE_PORTS" >> $GITHUB_ENV
+          echo "Deploying to $AVAILABLE_CONTAINER container"
 
-      - name: Create folder for tag and change directory
+      - name: Check and create deployment directory
         run: |
-          mkdir -p ${{ env.TAG_NAME }}
+          if [ ! -d "${{ env.AVAILABLE_CONTAINER }}" ]; then
+            echo "Creating directory: ${{ env.AVAILABLE_CONTAINER }}"
+            mkdir -p ${{ env.AVAILABLE_CONTAINER }}
+          else
+            echo "Directory ${{ env.AVAILABLE_CONTAINER }} already exists"
+          fi
 
-      - name: Checkout the code at the tag
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Ensure we fetch all history to access the tag
-          path: ${{ env.TAG_NAME }}  # Use the environment variable for the path
-          
-      # - name: Set up Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18'
-  
       - name: Check available ports
         run: |
-          # Check available ports and kill existing PM2 processes on those ports
-          OUTPUT=$(~/bin/check-active-container)
-          AVAILABLE_PORTS=$(echo "$OUTPUT" | grep "Ports to use" | cut -d ':' -f 2)
-          # Split the available ports and check for any PM2 processes using them
-          for port in $(echo "$AVAILABLE_PORTS" | tr "," "\n"); do
+          for port in $(echo "${{ env.AVAILABLE_PORTS }}" | tr "," "\n"); do
             if pm2 list | grep -q "$port"; then
               echo "Killing process on port $port"
               pm2 delete $(pm2 list | grep "$port" | awk '{print $2}')
             fi
           done
-      
-      - name: Install dependencies
-        run: |
-          cd ${{ env.TAG_NAME }}
 
-      - name: Run deployment scripts
+      - name: Checkout the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          path: ${{ env.AVAILABLE_CONTAINER }}
+
+      - name: Install dependencies and build
         run: |
-          cd ${{ env.TAG_NAME }}
-          TARGET_PATH=$(pwd)
-          echo "Target Path: $TARGET_PATH"
+          cd ${{ env.AVAILABLE_CONTAINER }}
           npm ci
           npm run build
-          # Start the app using the second script
+
+      - name: Deploy application
+        run: |
+          cd ${{ env.AVAILABLE_CONTAINER }}
+          TARGET_PATH=$(pwd)
+          echo "Target Path: $TARGET_PATH"
           ~/bin/mamanpaz-front-start $TARGET_PATH
