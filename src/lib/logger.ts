@@ -1,5 +1,5 @@
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
-import { LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter, LogRecord } from '@opentelemetry/sdk-logs';
+import { LoggerProvider, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { Resource } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { trace, context, Span } from '@opentelemetry/api';
@@ -155,13 +155,13 @@ export const logWarn = (message: string, attributes?: Record<string, unknown>): 
 export const logError = (message: string, attributes?: Record<string, unknown>): void => log('ERROR', message, attributes);
 export const logFatal = (message: string, attributes?: Record<string, unknown>): void => log('FATAL', message, attributes);
 
-// Type declaration for environment variables
-declare global {
-    namespace NodeJS {
-        interface ProcessEnv {
-            OTEL_SERVICE_NAME: string;
-            OTEL_EXPORTER_OTLP_ENDPOINT?: string;
-            HOME?: string;
-        }
-    }
-}
+// // Type declaration for environment variables
+// declare global {
+//     namespace NodeJS {
+//         interface ProcessEnv {
+//             OTEL_SERVICE_NAME: string;
+//             OTEL_EXPORTER_OTLP_ENDPOINT?: string;
+//             HOME?: string;
+//         }
+//     }
+// }
