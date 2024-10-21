@@ -4,9 +4,7 @@ import { Resource } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { trace, context, Span } from '@opentelemetry/api';
 import { Logger, SeverityNumber, } from '@opentelemetry/api-logs';
-import fs from 'fs';
 import path from 'path';
-import os from 'os';
 
 // Usecase example
 //------------------------------------------------------------------------------
@@ -71,26 +69,10 @@ const LogLevels: Record<Severity, SeverityNumber> = {
 const MIN_LOG_LEVEL: Severity = process.env.NODE_ENV === 'production' ? 'INFO' : 'DEBUG';
 
 if (isDevelopment) {
-    // Console exporter for development
-    loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(new ConsoleLogRecordExporter()));
-
-    // File exporter for development
-    const logDir = path.join(os.homedir(), 'logs');
-    if (!fs.existsSync(logDir)) {
-        fs.mkdirSync(logDir, { recursive: true });
-    }
-    const fileExporter = {
-        export(logs: LogRecord[]): Promise<void> {
-            logs.forEach(log => {
-                fs.appendFileSync(path.join(logDir, 'app.log'), JSON.stringify(log) + '\n');
-            });
-            return Promise.resolve();
-        },
-        shutdown(): Promise<void> {
-            return Promise.resolve();
-        },
-    };
-    loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(fileExporter));
+    const otlpExporter = new OTLPLogExporter({
+        url: 'http://127.0.0.1:4318/v1/logs',
+    });
+    loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter));
 } else {
     // OTLP exporter for production
     const otlpExporter = new OTLPLogExporter({
@@ -105,8 +87,11 @@ interface LogAttributes {
     [key: string]: unknown;
     trace_id?: string;
     span_id?: string;
-    'error.message'?: string;
-    'error.stack'?: string;
+    error_message?: string;
+    error_stack?: string;
+    origin_file?: string;
+    origin_line?: number;
+    origin_path?: string;
 }
 
 export const log = (severity: Severity, message: string, attributes: LogAttributes = {}, error?: Error): void => {
@@ -116,18 +101,42 @@ export const log = (severity: Severity, message: string, attributes: LogAttribut
     const span: Span | undefined = trace.getSpan(context.active());
     const spanContext = span?.spanContext();
 
+    // Get the call site information
+    const stackTrace = new Error().stack;
+    const callSite = stackTrace ? stackTrace.split('\n')[3] : '';
+    const match = callSite.match(/\((.+):(\d+):\d+\)$/);
+    const filePath = match ? match[1] : 'unknown';  // Full file path
+    const fileName = path.basename(filePath);
+    const lineNumber = match ? parseInt(match[2], 10) : 0;
+
+    // Determine the relative path
+    const projectRoot = process.cwd();
+    const relativePath = path.relative(projectRoot, filePath);
+
     let logAttributes = {
         ...attributes,
-        'trace_id': spanContext?.traceId,
-        'span_id': spanContext?.spanId,
+        trace_id: spanContext?.traceId,
+        span_id: spanContext?.spanId,
+        origin_file: fileName,
+        origin_line: lineNumber,
+        origin_path: `/${relativePath.replace(/\\/g, '/')}`,
     };
 
     if (error) {
         logAttributes = {
             ...logAttributes,
-            'error.message': error.message,
-            'error.stack': error.stack,
+            error_message: error.message,
+            error_stack: error.stack,
         };
+    }
+
+    if (isDevelopment) {
+        const consoleMethod = severity === 'ERROR' || severity === 'FATAL' ? console.error : console.log;
+        consoleMethod(`[${severity}] ${message}`, {
+            error_message: error?.message,
+            error_stack: error?.stack,
+            // timestamp: new Date().toISOString(),
+        });
     }
 
     logger.emit({
