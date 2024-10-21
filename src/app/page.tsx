@@ -1,8 +1,16 @@
 import Image from "next/image";
 import Logo from "@/app/assets/logo.svg";
 import { headingFont } from "./fonts";
+import { logInfo, logWarn, logError } from "@/lib/logger";
 
 export default function Home() {
+  logInfo('User logged in', { userId: '123' });
+  logWarn('Home Page called with warning', { source: 'client' });
+  logError('Home Page called with error', { source: 'client' });
+  // log.info('Home Page called');
+  // log.debug('Home Page called', { source: 'client' });
+  // log.error('Home Page called with error', { source: 'client' });
+  // log.warn('Home Page called with warning', { source: 'client' });
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center relative">
       <div className="z-10 -mt-40">

@@ -27,6 +27,9 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env*
+/src/lib/config.alloy.sample
+!.env.sample
 
 # vercel
 .vercel
