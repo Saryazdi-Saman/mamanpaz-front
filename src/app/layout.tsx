@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { bodyFont } from "./fonts";
+import { bodyFont, headingFont } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Mamanpaz Meals",
@@ -13,10 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${bodyFont.className} antialiased`}
-      >
+    <html lang="en" className={`${bodyFont.variable} ${headingFont.variable} antialiased`}>
+      <body>
         {children}
       </body>
     </html>
