@@ -1,7 +1,8 @@
 import Image from "next/image";
-import Logo from "@/app/assets/logo.svg";
+// import Logo from "@/app/assets/logo.svg";
 // import { logInfo, logWarn, logError } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/assets/svg";
 
 export default function Home() {
   // logInfo('User logged in', { userId: '123' });
@@ -9,12 +10,13 @@ export default function Home() {
   // logError('Home Page called with error', { source: 'client' });
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center relative">
-      <div className="z-10 -mt-40">
-        <Image src={Logo} alt="Logo" width={800} height={800} />
-        <h1 className={`text-center text-5xl font-extrabold tracking-wide -mt-24`}>
+      <div className="z-10">
+        {/* <Image src={Logo} alt="Logo" width={800} height={800} /> */}
+        <Logo width={200}/>
+        <h1 className={`text-center text-5xl font-extrabold tracking-wide`}>
           Coming Soon ...
         </h1>
-        <Button className="py-10 px-14 rounded-full ">See Plans</Button>
+        <Button className="py-6 rounded-full">See Plans</Button>
       </div>
     </div>
   );

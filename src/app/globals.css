@@ -16,9 +16,9 @@ html {
 @tailwind utilities;
 
 body {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   /* Set base font size to 16px */
-  line-height: 1.6;
+  line-height: 1.8;
   font-family: var(--font-body);
   /* Body font stack */
 }
