@@ -13,10 +13,10 @@ export default function Home() {
       <div className="z-10">
         {/* <Image src={Logo} alt="Logo" width={800} height={800} /> */}
         <Logo width={200}/>
-        <h1 className={`text-center text-5xl font-extrabold tracking-wide`}>
+        <h1 className={`text-center text-3xl font-extrabold tracking-wide`}>
           Coming Soon ...
         </h1>
-        <Button className="py-6 rounded-full">See Plans</Button>
+        <Button className="rounded-full">See Plans</Button>
       </div>
     </div>
   );
