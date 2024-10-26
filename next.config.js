@@ -17,8 +17,8 @@ const nextConfig = {
             // Convert all other SVG imports to React components
             {
                 test: /\.svg$/i,
-                issuer: /\.[jt]sx?$/,
-                resourceQuery: { not: /url/ }, // exclude if *.svg?url
+                issuer: fileLoaderRule.issuer,
+                resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
                 use: [{
                     loader: '@svgr/webpack',
                     options: {

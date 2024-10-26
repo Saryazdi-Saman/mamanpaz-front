@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="sticky z-50 top-0 inset-x-0 w-full h-16 py-3 px-16 flex items-center bg-background">
       
       <Link href="/" className="flex-shrink-0 h-full">
-        <Logo className="h-full" />
+        <Logo className="h-full"/>
       </Link>
 
       <NavItems />
