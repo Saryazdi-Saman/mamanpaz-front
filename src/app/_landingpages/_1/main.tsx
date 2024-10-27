@@ -1,5 +1,8 @@
+import { Separator } from "@/components/ui/separator";
 import Hero from "./hero";
 import HowItWorks from "./howItWorks";
+import PromoBanner from "./promoBanner";
+import Meals from "./meals";
 // import Logo from "@/app/assets/logo.svg";
 // import { logInfo, logWarn, logError } from "@/lib/logger";
 
@@ -11,7 +14,10 @@ export default function Landing1() {
     return (
         <>
             <Hero />
+            <Separator className="w-[calc(100%-4rem)] mx-auto bg-blue-50 h-px"/>
             <HowItWorks />
+            <PromoBanner />
+            <Meals />
         </>
     );
 }
