@@ -71,7 +71,7 @@ h6 {
     --secondary: var(--blue-50);
     --secondary-foreground: 0 0% 9%;
     --muted: var(--blue-50);
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: var(--blue-200);
     --accent: var(--blue-50);
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;

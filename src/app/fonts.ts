@@ -9,6 +9,7 @@ export const bodyFont = Lato({
 
 export const headingFont = STIX_Two_Text({
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   variable: '--font-heading',
   display: 'swap',
 })

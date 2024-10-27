@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en" className={`${bodyFont.variable} ${headingFont.variable} antialiased`}>
       <body className="relative h-full snap-y snap-mandatory">
         <Navbar />
-        <main className="relative flex flex-col min-h-screen">
+        <main className="relative flex flex-colß">
           <div className="flex-grow flex-1">
             {children}
           </div>
