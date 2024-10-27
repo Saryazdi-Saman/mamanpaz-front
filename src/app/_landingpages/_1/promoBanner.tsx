@@ -8,7 +8,7 @@ export default function PromoBanner() {
 
   
     return (
-        <section className="h-80 rounded-3xl bg-brown-100 w-full max-w-7xl flex justify-between overflow-clip gap-12 mx-auto my-12">
+        <section className="h-80 rounded-3xl bg-brown-100 w-full max-w-7xl flex justify-between overflow-clip gap-12 my-12 mx-auto">
             <div className="h-full w-2/5 relative">
                 <Image
                     src={MockupImage}

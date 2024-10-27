@@ -1,4 +1,5 @@
 export { default as Logo } from './Logo.svg'
+export { default as LogoIcon } from './logoIcon.svg'
 
 export { default as BrownPatterns } from './brown.svg'
 

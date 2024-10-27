@@ -1,7 +1,7 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
-const NAV_ITEMS = [
+export const NAV_ITEMS = [
     {
         name: 'Menu',
         href: '/meals'

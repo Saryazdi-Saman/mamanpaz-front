@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { bodyFont, headingFont } from "./fonts";
 import Navbar from "./_navbar/navbar";
+import Footer from "./_footer/footer";
 
 export const metadata: Metadata = {
   title: "Mamanpaz Meals",
@@ -22,6 +23,7 @@ export default function RootLayout({
             {children}
           </div>
         </main>
+        <Footer />
       </body>
     </html>
   );
