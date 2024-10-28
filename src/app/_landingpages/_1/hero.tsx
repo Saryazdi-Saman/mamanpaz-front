@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import heroImage from "@/assets/hero.png"
 import { Button } from "@/components/ui/button";
 import { DeliveryIcon } from "@/assets/svg";
@@ -24,21 +24,43 @@ const statsItems = [
 ];
 
 export default function Hero() {
+    const common = { alt: 'Dinner table set up with homemade meals', sizes: '100vw' }
+    const {
+        props: { srcSet: desktop },
+    } = getImageProps({
+        ...common,
+        width: 1636,
+        height: 599,
+        quality: 100,
+        src: '/hero.png'
+    })
+    const {
+        props: { srcSet: mobile, ...rest },
+    } = getImageProps({
+        ...common,
+        width: 640,
+        height: 896,
+        quality: 85,
+        src: '/hero-mobile.png',
+    })
     return (
-        <section className="hero h-[calc(100svh-4rem)] flex flex-col snap-end">
-            <section className="hero-content relative flex-grow bg-background py-6 px-16">
-                    <Image
-                        src={heroImage}
-                        alt="Dinner table set up with homemade meals"
-                        sizes="100vw"
-                        quality={100}
-                        priority
-                        fill
-                        className="z-0 object-cover"
-                    />
-                    <div className="flex flex-col items-start justify-center h-full grow">
-                        <header className="grow flex flex-col items-start justify-center max-w-md gap-10 z-10">
-                            <h1 className="text-5xl font-medium">
+        // TODO: h-screen should be fixed
+        <section className="hero min-h-[calc(100svh-3rem)] sm:h-[calc(100svh-4rem)] w-screen flex flex-col snap-end gap-8 sm:gap-0">
+            <section className="hero-content relative max-h-screen flex-grow bg-background">
+                <picture className="z-0 absolute h-full w-full">
+                    <source media="(min-width: 1024px)" srcSet={desktop} />
+                    <source srcSet={mobile} />
+                    <img {...rest} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </picture>
+                <div className="px-16 grow h-[calc(100vh-3rem)]
+                sm:h-full sm:py-8">
+
+                    <div className="h-1/2 sm:h-full w-full relative flex flex-col items-center justify-start sm:items-start">
+                        <header className="flex flex-col justify-center z-10 h-full w-full
+                    items-center gap-8 max-w-sm gorw
+                    sm:items-start sm:grow sm:gap-10 sm:max-w-md">
+
+                            <h1 className="font-medium text-3xl text-center sm:text-start sm:text-5xl">
                                 Homemade <span className="italic font-bold">Meals</span> Delivered to Your Doorstep
                             </h1>
                             <Button className="rounded-full">
@@ -53,13 +75,14 @@ export default function Hero() {
                             </div>
                         </div>
                     </div>
+                </div>
             </section>
-            <section className="hero-stats h-fit px-16 w-full bg-background pb-16 pt-6">
-                <ul className="grid auto-cols-fr grid-flow-col gap-16">
+            <section className="z-10 hero-stats h-fit px-16 w-full bg-background pb-16 pt-6">
+                <ul className="grid auto-rows-fr grid-flow-row sm:auto-cols-fr sm:grid-flow-col sm:gap-16 gap-16">
                     {statsItems.map((stat, index) => (
                         <li key={index}>
-                            <article className="flex flex-col items-start justify-start">
-                                <h2 className="text-5xl font-medium">{stat.value}</h2>
+                            <article className="flex flex-col items-center justify-start gap-6 sm:items-start text-center sm:text-start">
+                                <h2 className="text-4xl sm:text-5xl font-medium">{stat.value}</h2>
                                 <p className="text-xl text-muted-foreground">{stat.description}</p>
                             </article>
                         </li>
