@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { bodyFont } from "./fonts";
+import { bodyFont, headingFont } from "./fonts";
+import Navbar from "./_navbar/navbar";
+import Footer from "./_footer/footer";
 
 export const metadata: Metadata = {
   title: "Mamanpaz Meals",
@@ -13,11 +15,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${bodyFont.className} antialiased`}
-      >
-        {children}
+    <html lang="en" className={`${bodyFont.variable} ${headingFont.variable} antialiased`}>
+      <body className="relative h-full snap-y snap-mandatory w-svw">
+        <Navbar />
+        <main className="relative flex flex-col">
+          <div className="flex-grow flex-1 w-svw">
+            {children}
+          </div>
+        </main>
+        <Footer />
       </body>
     </html>
   );

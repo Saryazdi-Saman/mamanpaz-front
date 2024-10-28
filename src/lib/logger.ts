@@ -76,7 +76,7 @@ if (isDevelopment) {
 } else {
     // OTLP exporter for production
     const otlpExporter = new OTLPLogExporter({
-        url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318',
+        url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://127.0.0.1:4318/v1/logs',
     });
     loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter));
 }

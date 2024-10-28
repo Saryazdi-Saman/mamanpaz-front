@@ -76,6 +76,7 @@ jobs:
               echo "No active process on port $port"
             fi
           done
+          pm2 save
 
       - name: Checkout the code
         uses: actions/checkout@v4
