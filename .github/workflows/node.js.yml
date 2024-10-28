@@ -87,8 +87,8 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd ${{ env.AVAILABLE_CONTAINER }}
-          npm ci
-          npm run build
+          pnpm i --frozen-lockfile
+          pnpm run build
 
       - name: Deploy application
         run: |
