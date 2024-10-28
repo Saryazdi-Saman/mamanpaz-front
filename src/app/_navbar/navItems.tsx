@@ -1,4 +1,5 @@
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 
 export const NAV_ITEMS = [
@@ -26,8 +27,11 @@ export const NAV_ITEMS = [
 
 export default function NavItems() {
     return (
-        <div className="ml-10 hidden lg:flex lg:items-center">
-            <ul className="flex items-center">
+        <div className="w-full">
+
+            <input type='checkbox' className="peer hidden" id='navbar-open' />
+            <ul className="hidden peer-checked:flex items-center gap-4 w-full flex-col h-[calc(100vh-2.75rem)] pt-10
+            sm:flex-row sm:h-fit sm:flex sm:gap-2 sm:pt-0 sm:pl-10">
                 {
                     NAV_ITEMS.map((item, index) => (
                         <li key={index}>
@@ -44,6 +48,25 @@ export default function NavItems() {
                         </li>
                     ))
                 }
+                <Link
+                    href='#'
+                    className={
+                        buttonVariants({
+                            variant: 'outline',
+                            size: 'sm',
+                            className: "self-stretch rounded-full mt-10 sm:self-center sm:mt-0 sm:ml-auto",
+                        })}>
+                    Login
+                </Link>
+                <Link
+                    href='#'
+                    className={
+                        buttonVariants({
+                            size: 'sm',
+                            className: 'self-stretch rounded-full sm:self-center'
+                        })}>
+                    Get Started
+                </Link>
             </ul>
         </div>
     )
