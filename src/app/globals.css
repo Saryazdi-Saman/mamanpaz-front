@@ -73,7 +73,7 @@ h6 {
     --muted: var(--blue-50);
     --muted-foreground: var(--blue-200);
     --accent: var(--blue-50);
-    --accent-foreground: 0 0% 9%;
+    --accent-foreground: var(--blue-500);
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: var(--blue-500);
