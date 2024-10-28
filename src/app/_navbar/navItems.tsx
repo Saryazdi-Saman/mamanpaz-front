@@ -1,5 +1,4 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 export const NAV_ITEMS = [

@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { Logo } from "@/assets/svg";
-import { Button } from "@/components/ui/button";
-import NavItems from "./navItems";
 import { Menu } from "lucide-react";
+import Link from "next/link";
+import NavItems from "./navItems";
 
 export default function Navbar() {
   return (

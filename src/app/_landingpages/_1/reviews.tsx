@@ -25,7 +25,7 @@ export default function Reviews() {
                             <Star width={18} className="text-teal-400 fill-current" />
                         </div>
                     </header>
-                    <p className="font-bold text-base text-background">The meals remind me of my mom&apos;s cooking back in Iran. It's like a taste of home delivered to my door every week. No prep, no mess, just delicious food ready in minutes!</p>
+                    <p className="font-bold text-base text-background">The meals remind me of my mom&apos;s cooking back in Iran. It&apos;s like a taste of home delivered to my door every week. No prep, no mess, just delicious food ready in minutes!</p>
                 </li>
 
 
