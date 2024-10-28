@@ -5,13 +5,14 @@ import social3 from "@/assets/placeholders/social-3.png"
 import social4 from "@/assets/placeholders/social-4.png"
 import social5 from "@/assets/placeholders/social-5.png"
 import Image from "next/image";
+import IKImage from "@/lib/IKImage";
 
 const socials = [
-    social1,
-    social2,
-    social3,
-    social4,
-    social5
+    'socialmedia/social-1.png',
+    'socialmedia/social-2.png',
+    'socialmedia/social-3.png',
+    'socialmedia/social-4.png',
+    'socialmedia/social-5.png'
 ];
 
 export default function Reviews() {
@@ -69,7 +70,7 @@ export default function Reviews() {
             <ul className="flex gap-3 mx-auto w-fit max-w-7xl">
                 {socials.map((social, index) => (
                     <li key={index}>
-                        <Image src={social} alt='social media sharing' height={251} width={414} />
+                        <IKImage src={social} alt='social media sharing' height={251} width={414} />
                     </li>
                 ))}
             </ul>

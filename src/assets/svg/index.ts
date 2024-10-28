@@ -1,8 +1,6 @@
 export { default as Logo } from './Logo.svg'
 export { default as LogoIcon } from './logoIcon.svg'
 
-export { default as BrownPatterns } from './brown.svg'
-
 export { default as DeliveryIcon } from './mealPack.svg'
 export { default as PlansIcon } from './plans.svg'
 export { default as MealsBookIcon } from './mealsBook.svg'

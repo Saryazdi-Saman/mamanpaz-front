@@ -18,55 +18,55 @@ const meals: TMeal[] = [
         name: 'Ghormeh Sabzi',
         alt: 'image 1',
         description: 'A fragrant herb stew made with slow-cooked lamb and kidney beans',
-        src: '/../../../../../assets/placeholders/food-1.png'
+        src: 'meals/food-1.png'
     },
     {
         id: '2',
         name: 'Fesenjan',
         alt: 'image 2',
         description: 'A rich and tangy pomegranate walnut stew with tender chicken',
-        src: '/../../../../../assets/placeholders/food-1.png'
+        src: 'meals/food-2.png'
     },
     {
         id: '3',
         name: 'Chelo Kabab',
         alt: 'image 3',
         description: 'Juicy grilled beef or chicken kabobs, served with fluffy saffron rice',
-        src: '/../../../../../assets/placeholders/food-1.png'
+        src: 'meals/food-3.png'
     },
     {
         id: '4',
         name: 'Zereshk Polo',
         description: 'Barberry rice with golden chicken, delicately seasoned and full of flavor.',
-        src: '/../../../../../assets/placeholders/food-1.png',
+        src: 'meals/food-4.png',
         alt: 'image 4',
     },
     {
         id: '5',
         name: 'Ghormeh Sabzi',
         description: 'A fragrant herb stew made with slow-cooked lamb and kidney beans',
-        src: '/../../../../../assets/placeholders/food-1.png',
+        src: 'meals/food-5.png',
         alt: 'image 5',
     },
     {
         id: '6',
         name: 'Fesenjan',
         description: 'A rich and tangy pomegranate walnut stew with tender chicken',
-        src: '/../../../../../assets/placeholders/food-1.png',
+        src: 'meals/food-6.png',
         alt: 'image 6',
     },
     {
         id: '7',
         name: 'Chelo Kabab',
         description: 'Juicy grilled beef or chicken kabobs, served with fluffy saffron rice',
-        src: '/../../../../../assets/placeholders/food-1.png',
+        src: 'meals/food-7.png',
         alt: 'image 7',
     },
     {
         id: '8',
         name: 'Zereshk Polo',
         description: 'Barberry rice with golden chicken, delicately seasoned and full of flavor.',
-        src: '/../../../../../assets/placeholders/food-1.png',
+        src: 'meals/food-8.png',
         alt: 'image 8',
     },
     

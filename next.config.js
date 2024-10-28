@@ -1,6 +1,15 @@
 // next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'ik.imagekit.io',
+                pathname: '/rx1l63ol1q/**',
+            },
+        ],
+    },
     webpack(config) {
         // Find existing file loader rule that handles SVG files
         const fileLoaderRule = config.module.rules.find((rule) =>

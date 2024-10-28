@@ -30,7 +30,8 @@ export default function Hero() {
                     <Image
                         src={heroImage}
                         alt="Dinner table set up with homemade meals"
-                        sizes="100vh"
+                        sizes="100vw"
+                        quality={100}
                         priority
                         fill
                         className="z-0 object-cover"

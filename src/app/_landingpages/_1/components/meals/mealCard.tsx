@@ -1,23 +1,4 @@
-import Image from "next/image"
-import meal1 from "@/assets/placeholders/food-1.png"
-import meal2 from "@/assets/placeholders/food-2.png"
-import meal3 from "@/assets/placeholders/food-3.png"
-import meal4 from "@/assets/placeholders/food-4.png"
-import meal5 from "@/assets/placeholders/food-5.png"
-import meal6 from "@/assets/placeholders/food-6.png"
-import meal7 from "@/assets/placeholders/food-7.png"
-import meal8 from "@/assets/placeholders/food-8.png"
-
-const mealImages = {
-    '1': meal1,
-    '2': meal2,
-    '3': meal3,
-    '4': meal4,
-    '5': meal5,
-    '6': meal6,
-    '7': meal7,
-    '8': meal8,
-}
+import IKImage from "@/lib/IKImage"
 
 export default function MealCard({
     meal
@@ -33,8 +14,8 @@ export default function MealCard({
     return (
         <article className="w-80 h-fit flex flex-col justify-start gap-4">
             <div className="h-96 relative w-full rounded-lg overflow-clip">
-                <Image
-                    src={mealImages[meal.id]}
+                <IKImage
+                    src={meal.src}
                     alt={meal.alt}
                     fill
                     className="rounded-lg object-cover"
