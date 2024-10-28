@@ -2,7 +2,7 @@
 // import { AnimatedGroup } from "@/components/motion-premitives/animatedGroup";
 // import MealPreviewCard from "./mealPreviewCard";
 
-import { AnimatedGroup } from "../../../../../components/motion/animatedGroup"
+// import { AnimatedGroup } from "../../../../../components/motion/animatedGroup"
 import MealCard from "./mealCard";
 
 type TMeal = {
@@ -74,32 +74,10 @@ const meals: TMeal[] = [
 
 export default function PreviewMeals() {
     return (
-            <AnimatedGroup
-                className='grid grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] gap-y-11 gap-x-10 w-full pt-11 max-w-7xl mx-auto'
-                variants={{
-                    container: {
-                        hidden: { opacity: 0 },
-                        visible: {
-                            opacity: 1,
-                            transition: {
-                                staggerChildren: 0.05,
-                            },
-                        },
-                    },
-                    item: {
-                        hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
-                        visible: {
-                            opacity: 1,
-                            y: 0,
-                            filter: 'blur(0px)',
-                            transition: {
-                                duration: 1.2,
-                                type: 'spring',
-                                bounce: 0.3,
-                            },
-                        },
-                    },
-                }}
+            <div
+                className='w-full mx-auto
+                flex flex-col gap-6 py-10 items-center
+                sm:grid sm:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] sm:gap-y-11 sm:gap-x-10 sm:pt-11 sm:max-w-7xl'
             >
                 {meals.map((meal) => (
                     <MealCard
@@ -107,6 +85,42 @@ export default function PreviewMeals() {
                         key={meal.id}
                     />
                 ))}
-            </AnimatedGroup>
+            </div>
+            // <AnimatedGroup
+            //     className='w-full mx-auto
+            //     flex flex-col gap-6 py-10
+            //     sm:grid sm:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] sm:gap-y-11 sm:gap-x-10 sm:pt-11 sm:max-w-7xl'
+            //     variants={{
+            //         container: {
+            //             hidden: { opacity: 0 },
+            //             visible: {
+            //                 opacity: 1,
+            //                 transition: {
+            //                     staggerChildren: 0.05,
+            //                 },
+            //             },
+            //         },
+            //         item: {
+            //             hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
+            //             visible: {
+            //                 opacity: 1,
+            //                 y: 0,
+            //                 filter: 'blur(0px)',
+            //                 transition: {
+            //                     duration: 1.2,
+            //                     type: 'spring',
+            //                     bounce: 0.3,
+            //                 },
+            //             },
+            //         },
+            //     }}
+            // >
+            //     {meals.map((meal) => (
+            //         <MealCard
+            //             meal={meal}
+            //             key={meal.id}
+            //         />
+            //     ))}
+            // </AnimatedGroup>
     )
 }

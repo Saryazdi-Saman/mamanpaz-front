@@ -1,8 +1,7 @@
-import Image, { getImageProps } from "next/image";
-import heroImage from "@/assets/hero.png"
-import { Button } from "@/components/ui/button";
 import { DeliveryIcon } from "@/assets/svg";
+import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
+import { getImageProps } from "next/image";
 
 const statsItems = [
     {

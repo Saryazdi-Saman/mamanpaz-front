@@ -16,10 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${bodyFont.variable} ${headingFont.variable} antialiased`}>
-      <body className="relative h-full snap-y snap-mandatory">
+      <body className="relative h-full snap-y snap-mandatory w-svw">
         <Navbar />
-        <main className="relative flex flex-colß">
-          <div className="flex-grow flex-1">
+        <main className="relative flex flex-col">
+          <div className="flex-grow flex-1 w-svw">
             {children}
           </div>
         </main>

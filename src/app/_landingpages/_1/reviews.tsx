@@ -1,11 +1,5 @@
-import { Star } from "lucide-react";
-import social1 from "@/assets/placeholders/social-1.png"
-import social2 from "@/assets/placeholders/social-2.png"
-import social3 from "@/assets/placeholders/social-3.png"
-import social4 from "@/assets/placeholders/social-4.png"
-import social5 from "@/assets/placeholders/social-5.png"
-import Image from "next/image";
 import IKImage from "@/lib/IKImage";
+import { Star } from "lucide-react";
 
 const socials = [
     'socialmedia/social-1.png',
@@ -17,9 +11,9 @@ const socials = [
 
 export default function Reviews() {
     return (
-        <section className="pb-24 px-16 space-y-10">
-            <ul className="ratings text-review w-full h-60 flex gap-6 max-w-7xl mx-auto">
-                <li className="h-full w-full max-w-md rounded-2xl bg-blue-500 p-6 space-y-3">
+        <section className="px-4 pb-16 space-y-6 sm:pb-24 sm:px-16 sm:space-y-10 w-svw">
+            <ul className="ratings text-review w-full h-60 flex gap-2 sm:gap-6 max-w-7xl mx-auto items-center justify-start overflow-scroll sm:justify-center ">
+                <li className="h-full min-w-80 sm:max-w-md sm:min-w-96 rounded-2xl bg-blue-500 p-6 space-y-3 grow">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Sara N.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -35,7 +29,7 @@ export default function Reviews() {
                 </li>
 
 
-                <li className="h-full w-full max-w-md rounded-2xl bg-blue-500 p-6 space-y-3">
+                <li className="h-full min-w-80 max-w-md sm:min-w-80 rounded-2xl bg-blue-500 p-6 space-y-3 grow">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Ali R.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -51,7 +45,7 @@ export default function Reviews() {
                 </li>
 
 
-                <li className="h-full w-full max-w-md rounded-2xl bg-blue-500 p-6 space-y-3">
+                <li className="h-full min-w-80 max-w-md sm:min-w-96 rounded-2xl bg-blue-500 p-6 space-y-3 grow">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Negin H.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -66,10 +60,10 @@ export default function Reviews() {
                     <p className="font-bold text-base text-background">The weight loss plan is fantastic! Not only are the meals fresh and healthy, but they also helped me stay on track with my goals without sacrificing taste.</p>
                 </li>
             </ul>
-            <h1 className="mx-auto text-center font-medium text-5xl">People are <span className="font-bold italic">happy to share us</span> on socials</h1>
-            <ul className="flex gap-3 mx-auto w-fit max-w-7xl">
+            <h1 className="mx-auto text-center font-medium text-4xl sm:text-5xl">People are <span className="font-bold italic">happy to share us</span> on socials</h1>
+            <ul className="flex gap-3 mx-auto w-full max-w-7xl overflow-scroll">
                 {socials.map((social, index) => (
-                    <li key={index}>
+                    <li key={index} className="relative w-64 h-[26rem] shrink-0">
                         <IKImage src={social} alt='social media sharing' height={251} width={414} />
                     </li>
                 ))}
