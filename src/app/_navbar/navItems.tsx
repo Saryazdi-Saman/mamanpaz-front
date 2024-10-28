@@ -31,13 +31,6 @@ export default function NavItems() {
                 {
                     NAV_ITEMS.map((item, index) => (
                         <li key={index}>
-                            {/* <Button variant='ghost' size='sm' className="font-normal">
-                                <Link
-                                    href={item.href}
-                                    className="hover:text-primary transition-colors">
-                                    {item.name}
-                                </Link>
-                            </Button> */}
                             <Link
                                 href={item.href}
                                 className={

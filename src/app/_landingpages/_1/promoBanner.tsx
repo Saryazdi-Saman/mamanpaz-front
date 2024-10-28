@@ -23,7 +23,7 @@ export default function PromoBanner() {
             </div>
 
             {/*-----Background Patterns-----*/}
-            <div className="self-center grid grid-cols-4 gap-x-8 px-4">
+            <div className="self-center grid grid-cols-4 gap-x-8 px-4" aria-hidden='true'>
                 {Array.from({length : 44}).map((_,index)=>(
                     <LogoIcon 
                         key={index}
