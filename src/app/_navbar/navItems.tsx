@@ -29,7 +29,7 @@ export default function NavItems() {
         <div className="w-full">
             <input type='checkbox' className="peer hidden" id='navbar-open' />
             <ul className="hidden peer-checked:flex items-center gap-4 w-full flex-col h-[calc(100vh-2.75rem)] pt-10
-            sm:flex-row sm:h-fit sm:flex sm:gap-2 sm:pt-0 sm:pl-10">
+            lg:flex-row lg:h-fit lg:flex lg:gap-2 lg:pt-0 lg:pl-10">
                 {
                     NAV_ITEMS.map((item, index) => (
                         <li key={index}>
@@ -52,7 +52,7 @@ export default function NavItems() {
                         buttonVariants({
                             variant: 'outline',
                             size: 'sm',
-                            className: "self-stretch rounded-full mt-10 sm:self-center sm:mt-0 sm:ml-auto",
+                            className: "self-stretch rounded-full mt-10 lg:self-center lg:mt-0 lg:ml-auto",
                         })}>
                     Login
                 </Link>
@@ -61,7 +61,7 @@ export default function NavItems() {
                     className={
                         buttonVariants({
                             size: 'sm',
-                            className: 'self-stretch rounded-full sm:self-center'
+                            className: 'self-stretch rounded-full lg:self-center'
                         })}>
                     Get Started
                 </Link>

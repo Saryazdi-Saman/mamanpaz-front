@@ -44,7 +44,7 @@ export default function Hero() {
     })
     return (
         // TODO: h-screen should be fixed
-        <section className="hero min-h-[calc(100svh-3rem)] sm:h-[calc(100svh-4rem)] w-screen flex flex-col snap-end gap-8 sm:gap-0">
+        <section className="hero min-h-[calc(100svh-3rem)] xl:h-[calc(100svh-3rem)] w-screen flex flex-col snap-end gap-8 xl:gap-0">
             <section className="hero-content relative max-h-screen flex-grow bg-background">
                 <picture className="z-0 absolute h-full w-full">
                     <source media="(min-width: 1024px)" srcSet={desktop} />
@@ -52,14 +52,15 @@ export default function Hero() {
                     <img {...rest} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </picture>
                 <div className="px-16 grow h-[calc(100vh-3rem)]
-                sm:h-full sm:py-8">
+                xl:h-full lg:py-16">
 
-                    <div className="h-1/2 sm:h-full w-full relative flex flex-col items-center justify-start sm:items-start">
+                    <div className="h-1/2 lg:h-full w-full relative flex flex-col items-center justify-start lg:items-start">
                         <header className="flex flex-col justify-center z-10 h-full w-full
                     items-center gap-8 max-w-sm gorw
-                    sm:items-start sm:grow sm:gap-10 sm:max-w-md">
+                    lg:items-start lg:grow lg:gap-10 
+                    xl:max-w-md">
 
-                            <h1 className="font-medium text-3xl text-center sm:text-start sm:text-5xl">
+                            <h1 className="font-medium text-3xl text-center lg:text-start lg:text-4xl xl:text-5xl">
                                 Homemade <span className="italic font-bold">Meals</span> Delivered to Your Doorstep
                             </h1>
                             <Button className="rounded-full">
@@ -77,11 +78,12 @@ export default function Hero() {
                 </div>
             </section>
             <section className="z-10 hero-stats h-fit px-16 w-full bg-background pb-16 pt-6">
-                <ul className="grid auto-rows-fr grid-flow-row sm:auto-cols-fr sm:grid-flow-col sm:gap-16 gap-16">
+                <ul className="flex flex-wrap justify-center md:gap-8 xl:gap-16 gap-16">
+                {/* <ul className="grid auto-rows-fr grid-flow-row lg:auto-cols-fr lg:grid-flow-col md:gap-8 xl:gap-16 gap-16"> */}
                     {statsItems.map((stat, index) => (
-                        <li key={index}>
-                            <article className="flex flex-col items-center justify-start gap-6 sm:items-start text-center sm:text-start">
-                                <h2 className="text-4xl sm:text-5xl font-medium">{stat.value}</h2>
+                        <li key={index} className="max-w-72">
+                            <article className="flex flex-col items-center justify-start gap-4 md:gap-3 xl:gap-6 lg:items-start text-center lg:text-start">
+                                <h2 className="text-5xl lg:text-4xl xl:text-5xl font-medium">{stat.value}</h2>
                                 <p className="text-xl text-muted-foreground">{stat.description}</p>
                             </article>
                         </li>

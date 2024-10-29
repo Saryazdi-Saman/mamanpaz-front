@@ -4,19 +4,19 @@ import { ArrowRightIcon } from "lucide-react";
 
 export default function Plans() {
     return (
-        <section className="px-4 py-16 sm:py-24 sm:px-16">
+        <section className="px-4 py-16 lg:py-24 lg:px-16 w-full">
             <header className="w-fit mx-auto">
-                <h1 className="text-center sm:text-5xl text-4xl font-medium">Our <span className="font-bold italic">Simple and Easy</span> Pricing</h1>
+                <h1 className="text-center lg:text-5xl text-4xl font-medium">Our <span className="font-bold italic">Simple and Easy</span> Pricing</h1>
             </header>
 
 
-            <ul className="py-10 max-w-7xl flex flex-col sm:flex-row gap-6 mx-auto">
-                <li className="max-w-md h-[33rem] bg-teal-50 grow rounded-2xl py-5 px-6">
+            <ul className="py-10 w-full max-w-7xl flex flex-col items-center lg:flex-row gap-6 mx-auto md:flex-wrap justify-center">
+                <li className="w-[26rem] h-[33rem] bg-teal-50 rounded-2xl py-5 px-6">
                     <article className="flex flex-col gap-9 h-full">
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-teal-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl lg:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
@@ -27,12 +27,12 @@ export default function Plans() {
                     </article>
                 </li>
 
-                <li className="max-w-md h-[33rem] bg-brown-50 grow rounded-2xl py-5 px-6">
+                <li className="w-[26rem] h-[33rem] bg-brown-50 rounded-2xl py-5 px-6">
                     <article className="flex flex-col gap-9 h-full">
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-brown-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl lg:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
@@ -44,12 +44,12 @@ export default function Plans() {
                 </li>
 
 
-                <li className="max-w-md h-[33rem] bg-blue-50 grow rounded-2xl py-5 px-6">
+                <li className="w-[26rem] h-[33rem] bg-blue-50 rounded-2xl py-5 px-6">
                     <article className="flex flex-col gap-9 h-full">
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-blue-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl lg:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
