@@ -23,7 +23,7 @@ export default function PromoBanner() {
                     />
                 </div>
                 <div className="max-w-sm flex flex-col justify-center
-            h-fit gap-8 items-center text-center
+            h-fit gap-8 items-center text-center px-6
             sm:h-full sm:items-start sm:gap-10 sm:text-start">
                     <h2 className="font-semibold text-2xl sm:text-4xl text-pretty">Get <span className="italic font-bold">20% OFF</span> on your monthly plan</h2>
                     <Button className="rounded-full">See Plans <ArrowRightIcon /></Button>

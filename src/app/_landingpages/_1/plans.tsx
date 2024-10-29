@@ -16,7 +16,7 @@ export default function Plans() {
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-teal-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-4xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
@@ -32,7 +32,7 @@ export default function Plans() {
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-brown-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-5xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
@@ -49,7 +49,7 @@ export default function Plans() {
                         <p className=" uppercase font-bold text-sm text-blue-400">Basic Plan</p>
                         <LogoIcon width={70} className='text-blue-500'/>
                         <header className="space-y-4">
-                            <h2 className="font-medium text-5xl">7 Meals/Week</h2>
+                            <h2 className="font-medium text-4xl sm:text-5xl">7 Meals/Week</h2>
                             <p className="text-base text-blue-400">Perfect for singles or small families looking for homemade goodness.</p>
                         </header>
                         <div className="grow"></div>
