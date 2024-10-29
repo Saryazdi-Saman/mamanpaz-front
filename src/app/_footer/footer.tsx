@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 export default function Footer() {
     return (
         <>
-            <Separator className="w-svw sm:w-[calc(100%-4rem)] sm:mx-auto bg-blue-50 h-px" />
+            <Separator className="w-svw lg:w-[calc(100%-4rem)] lg:mx-auto bg-blue-50 h-px" />
             <footer className="max-w-svw w-full flex flex-col items-center gap-6 px-28 ">
                 <Logo className='w-36 pt-6 -mb-3' />
                 <ul className="w-svw flex items-center justify-center flex-row flex-wrap gap-2 ">
@@ -26,10 +26,10 @@ export default function Footer() {
                         </li>
                     ))}
                 </ul>
-                <Separator className=" bg-blue-50 h-px w-svw sm:w-full" />
+                <Separator className=" bg-blue-50 h-px w-svw lg:w-full" />
                 <div className="pb-6 flex
                 flex-col w-svw justify-start items-center
-                sm:flex-row sm:w-full sm:justify-between sm:items-baseline">
+                lg:flex-row lg:w-full lg:justify-between lg:items-baseline">
                     <p className="text-base text-blue-400 leading-6">&copy; 2024 MamanpazMeals. All rights reserved</p>
                     <ul className="flex">
                         <li>

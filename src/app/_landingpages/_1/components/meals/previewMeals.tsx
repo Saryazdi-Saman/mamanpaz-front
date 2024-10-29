@@ -77,7 +77,8 @@ export default function PreviewMeals() {
             <div
                 className='w-full mx-auto
                 flex flex-col gap-6 py-10 items-center
-                sm:grid sm:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] sm:gap-y-11 sm:gap-x-10 sm:pt-11 sm:max-w-7xl'
+                md:grid md:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] md:gap-y-11 md:gap-x-4 md:pt-11 md:max-w-7xl  md:justify-items-center
+                lg:gap-x-10'
             >
                 {meals.map((meal) => (
                     <MealCard
@@ -89,7 +90,7 @@ export default function PreviewMeals() {
             // <AnimatedGroup
             //     className='w-full mx-auto
             //     flex flex-col gap-6 py-10
-            //     sm:grid sm:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] sm:gap-y-11 sm:gap-x-10 sm:pt-11 sm:max-w-7xl'
+            //     md:grid lg:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] lg:gap-y-11 lg:gap-x-10 lg:pt-11 lg:max-w-7xl'
             //     variants={{
             //         container: {
             //             hidden: { opacity: 0 },

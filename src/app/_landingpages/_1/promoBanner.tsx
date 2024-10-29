@@ -8,12 +8,13 @@ export default function PromoBanner() {
 
     return (
         <section className="px-4 w-svw">
-            <div className="h-fit rounded-3xl bg-brown-100 flex justify-between mx-auto overflow-clip
-        flex-col items-center w-full gap-8
-        sm:flex-row sm:w-full sm:max-w-7xl sm:h-80 sm:my-12 sm:gap-12">
+            <div className="min-h-80 rounded-3xl bg-brown-100 flex justify-between mx-auto overflow-clip relative
+        flex-col items-center w-full gap-8 
+        md:flex-row md:w-full md:max-w-7xl md:h-80 md:my-12 md:gap-4 
+        lg:gap-12">
                 <div className="relative
-            w-full h-60
-            sm:h-full sm:w-2/5">
+            w-full h-60 grow 
+            md:h-full md:aspect-square">
                     <IKImage
                         src='packaging/mockup-4.png'
                         alt='packaged mamanpaz meal'
@@ -23,15 +24,15 @@ export default function PromoBanner() {
                     />
                 </div>
                 <div className="max-w-sm flex flex-col justify-center
-            h-fit gap-8 items-center text-center
-            sm:h-full sm:items-start sm:gap-10 sm:text-start">
-                    <h2 className="font-semibold text-2xl sm:text-4xl text-pretty">Get <span className="italic font-bold">20% OFF</span> on your monthly plan</h2>
+            h-fit gap-8 items-center text-center px-6 md:px-2
+            md:h-full md:items-start md:gap-10 md:text-start">
+                    <h2 className="font-semibold text-2xl lg:text-4xl text-pretty">Get <span className="italic font-bold">20% OFF</span> on your monthly plan</h2>
                     <Button className="rounded-full">See Plans <ArrowRightIcon /></Button>
                 </div>
 
                 {/*-----Background Patterns-----*/}
                 {/*------------Mobile-----------*/}
-                <div className="sm:hidden grid grid-cols-7 h-fit w-full -mb-3" aria-hidden='true'>
+                <div className="md:hidden grid grid-cols-7 h-fit w-fit -mb-3" aria-hidden='true'>
                     {Array.from({ length: 21 }).map((_, index) => (
                         <LogoIcon
                             key={index}
@@ -42,7 +43,7 @@ export default function PromoBanner() {
                 </div>
 
                 {/*------------Desktop-----------*/}
-                <div className="hidden sm:grid grid-cols-4 gap-x-8 px-4" aria-hidden='true'>
+                <div className="hidden md:grid grid-cols-4 gap-x-8 px-4" aria-hidden='true'>
                     {Array.from({ length: 44 }).map((_, index) => (
                         <LogoIcon
                             key={index}
