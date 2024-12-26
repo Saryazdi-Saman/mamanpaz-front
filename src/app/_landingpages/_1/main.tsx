@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import Hero from "./hero";
 import HowItWorks from "./howItWorks";
-import PromoBanner from "./promoBanner";
+import PromoBanner from "./promo";
 import Meals from "./meals";
 import Plans from "./plans";
 import Reviews from "./reviews";
@@ -16,7 +16,7 @@ export default function Landing1() {
     return (
         <>
             <Hero />
-            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-blue-50 h-px"/>
+            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-brown-300 h-px"/>
             <HowItWorks />
             <PromoBanner />
             <Meals />
