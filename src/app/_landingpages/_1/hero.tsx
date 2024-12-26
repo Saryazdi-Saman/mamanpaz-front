@@ -30,8 +30,8 @@ export default function Hero() {
         ...common,
         width: 1636,
         height: 599,
-        quality: 100,
-        src: '/hero.png'
+        quality: 85,
+        src: '/hero-arezou.jpg'
     })
     const {
         props: { srcSet: mobile, ...rest },
@@ -44,7 +44,7 @@ export default function Hero() {
     })
     return (
         // TODO: h-screen should be fixed
-        <section className="hero min-h-[calc(100svh-3rem)] xl:h-[calc(100svh-3rem)] w-screen flex flex-col snap-end gap-8 xl:gap-0">
+        <section className="hero min-h-[calc(100svh-3.75rem)] md:h-[calc(100svh-3.75rem)] w-screen flex flex-col snap-end gap-8 xl:gap-0">
             <section className="hero-content relative max-h-screen flex-grow bg-background">
                 <picture className="z-0 absolute h-full w-full">
                     <source media="(min-width: 1024px)" srcSet={desktop} />
@@ -60,24 +60,24 @@ export default function Hero() {
                     lg:items-start lg:grow lg:gap-10 
                     xl:max-w-md">
 
-                            <h1 className="font-medium text-3xl text-center lg:text-start lg:text-4xl xl:text-5xl">
+                            <h1 className="leading-tight font-medium text-3xl text-center text-background lg:text-start lg:text-5xl lg:leading-tight xl:text-5xl xl:leading-tight">
                                 Homemade <span className="italic font-bold">Meals</span> Delivered to Your Doorstep
                             </h1>
-                            <Button className="rounded-full">
+                            <Button className="border border-blue-100">
                                 See Plans <ArrowRightIcon aria-hidden="true" />
                             </Button>
                         </header>
-                        <div className="flex gap-3 z-10 items-center">
+                        <div className="flex gap-3 z-10 items-center text-background self-end">
                             <DeliveryIcon aria-hidden="true" />
                             <div>
-                                <p className="text-base font-bold">Delivered Food Boxes</p>
-                                <p className="text-3xl font-bold">165,370</p>
+                                <p className="text-base font-bold leading-tight">Delivered Food Boxes</p>
+                                <p className="text-3xl font-bold leading-tight">165,370</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <section className="z-10 hero-stats h-fit px-16 w-full bg-background pb-16 pt-6">
+            <section className="z-10 hero-stats h-fit px-16 w-full bg-background py-16">
                 <ul className="flex flex-wrap justify-center md:gap-8 xl:gap-16 gap-16">
                 {/* <ul className="grid auto-rows-fr grid-flow-row lg:auto-cols-fr lg:grid-flow-col md:gap-8 xl:gap-16 gap-16"> */}
                     {statsItems.map((stat, index) => (
