@@ -1,6 +1,5 @@
 import { LogoIcon } from "@/assets/svg";
 import { Button } from "@/components/ui/button";
-import IKImage from "@/lib/IKImage";
 import { ArrowRightIcon } from "lucide-react";
 
 export default function PromoBanner() {
