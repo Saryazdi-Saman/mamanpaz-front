@@ -1,4 +1,7 @@
 import { HotMealIcon, LogoIcon, MealsBookIcon, PlansIcon } from "@/assets/svg";
+import { Button } from "@/components/ui/button";
+
+import { ArrowRightIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 // Define a type for our step items
@@ -29,8 +32,8 @@ const steps: Step[] = [
 
 export default function HowItWorks() {
   return (
-    <section className="flex flex-col gap-16 justify-start items-center pt-16 pb-24 snap-top
-            px-4
+    <section className="flex flex-col gap-16 justify-start items-center pt-16 pb-24 snap-top mx-auto
+            
             lg:px-16">
       <h1 className="text-4xl lg:text-5xl font-medium">How it <span className="italic font-bold">really</span> works?</h1>
       <ul className="flex flex-wrap justify-center
@@ -50,6 +53,7 @@ export default function HowItWorks() {
           </li>
         ))}
       </ul>
+      <Button className="mt-10">Get Started <ArrowRightIcon /></Button>
     </section>
   )
 }

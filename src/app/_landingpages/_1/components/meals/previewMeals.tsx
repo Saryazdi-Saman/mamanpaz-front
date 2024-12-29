@@ -3,10 +3,11 @@
 // import MealPreviewCard from "./mealPreviewCard";
 
 // import { AnimatedGroup } from "../../../../../components/motion/animatedGroup"
+import { Marquee } from "@/components/ui/marquee";
 import MealCard from "./mealCard";
 
 type TMeal = {
-    id: '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8',
+    id: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8',
     name: string,
     description: string,
     src: string,
@@ -69,59 +70,76 @@ const meals: TMeal[] = [
         src: 'meals/food-8.png',
         alt: 'image 8',
     },
-    
+
 ];
 
 export default function PreviewMeals() {
     return (
-            <div
-                className='w-full mx-auto
-                flex flex-col gap-6 py-10 items-center
-                md:grid md:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] md:gap-y-11 md:gap-x-4 md:pt-11 md:max-w-7xl  md:justify-items-center
-                lg:gap-x-10'
-            >
-                {meals.map((meal) => (
-                    <MealCard
-                        meal={meal}
-                        key={meal.id}
-                    />
+        <div
+            className='w-full mx-auto py-10 '
+        >
+                <Marquee>{meals.map((meal, i) => (
+                    <div
+                        key={i}
+                        className="h-full w-full mx-4 flex items-center justify-start"
+                    >
+                        <MealCard
+                            meal={meal}
+                            key={meal.id}
+                        />
+                    </div>
                 ))}
-            </div>
-            // <AnimatedGroup
-            //     className='w-full mx-auto
-            //     flex flex-col gap-6 py-10
-            //     md:grid lg:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] lg:gap-y-11 lg:gap-x-10 lg:pt-11 lg:max-w-7xl'
-            //     variants={{
-            //         container: {
-            //             hidden: { opacity: 0 },
-            //             visible: {
-            //                 opacity: 1,
-            //                 transition: {
-            //                     staggerChildren: 0.05,
-            //                 },
-            //             },
-            //         },
-            //         item: {
-            //             hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
-            //             visible: {
-            //                 opacity: 1,
-            //                 y: 0,
-            //                 filter: 'blur(0px)',
-            //                 transition: {
-            //                     duration: 1.2,
-            //                     type: 'spring',
-            //                     bounce: 0.3,
-            //                 },
-            //             },
-            //         },
-            //     }}
-            // >
-            //     {meals.map((meal) => (
-            //         <MealCard
-            //             meal={meal}
-            //             key={meal.id}
-            //         />
-            //     ))}
-            // </AnimatedGroup>
+                </Marquee>
+        </div>
+        // <div
+        //     className='w-full mx-auto
+        //     flex flex-col gap-6 py-10 items-center
+        //     md:grid md:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] md:gap-y-11 md:gap-x-4 md:pt-11 md:max-w-7xl  md:justify-items-center
+        //     lg:gap-x-10'
+        // >
+        //     {meals.map((meal) => (
+        //         <MealCard
+        //             meal={meal}
+        //             key={meal.id}
+        //         />
+        //     ))}
+        // </div>
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // <AnimatedGroup
+        //     className='w-full mx-auto
+        //     flex flex-col gap-6 py-10
+        //     md:grid lg:grid-cols-[repeat(auto-fill,minmax(18rem,1fr))] lg:gap-y-11 lg:gap-x-10 lg:pt-11 lg:max-w-7xl'
+        //     variants={{
+        //         container: {
+        //             hidden: { opacity: 0 },
+        //             visible: {
+        //                 opacity: 1,
+        //                 transition: {
+        //                     staggerChildren: 0.05,
+        //                 },
+        //             },
+        //         },
+        //         item: {
+        //             hidden: { opacity: 0, y: 40, filter: 'blur(4px)' },
+        //             visible: {
+        //                 opacity: 1,
+        //                 y: 0,
+        //                 filter: 'blur(0px)',
+        //                 transition: {
+        //                     duration: 1.2,
+        //                     type: 'spring',
+        //                     bounce: 0.3,
+        //                 },
+        //             },
+        //         },
+        //     }}
+        // >
+        //     {meals.map((meal) => (
+        //         <MealCard
+        //             meal={meal}
+        //             key={meal.id}
+        //         />
+        //     ))}
+        // </AnimatedGroup>
     )
 }

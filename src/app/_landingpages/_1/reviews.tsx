@@ -1,3 +1,4 @@
+import { Marquee } from "@/components/ui/marquee";
 import IKImage from "@/lib/IKImage";
 import { Star } from "lucide-react";
 
@@ -11,9 +12,10 @@ const socials = [
 
 export default function Reviews() {
     return (
-        <section className="px-4 pb-16 space-y-6 lg:pb-24 lg:px-16 lg:space-y-10 w-svw">
+        <section className="px-4 py-16 space-y-6 lg:pb-24 lg:px-16 w-svw">
+            <h1 className="mx-auto text-center font-medium text-4xl lg:text-5xl">People are <span className="font-bold italic">happy to share us</span> on socials</h1>
             <ul className="ratings text-review w-full h-60 flex gap-2 lg:gap-6 max-w-7xl mx-auto items-center justify-start overflow-x-auto lg:justify-center ">
-                <li className="h-full min-w-80 max-w-md lg:min-w-96 rounded-2xl bg-blue-500 p-6 space-y-3">
+                <li className="h-full min-w-80 max-w-md lg:min-w-96 bg-blue-500 p-6 space-y-3">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Sara N.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -29,7 +31,7 @@ export default function Reviews() {
                 </li>
 
 
-                <li className="h-full min-w-80 max-w-md lg:min-w-96 rounded-2xl bg-blue-500 p-6 space-y-3">
+                <li className="h-full min-w-80 max-w-md lg:min-w-96 bg-blue-500 p-6 space-y-3">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Ali R.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -45,7 +47,7 @@ export default function Reviews() {
                 </li>
 
 
-                <li className="h-full min-w-80 max-w-md lg:min-w-96 rounded-2xl bg-blue-500 p-6 space-y-3">
+                <li className="h-full min-w-80 max-w-md lg:min-w-96 bg-blue-500 p-6 space-y-3">
                     <header className="space-y-2">
                         <h3 className="font-body font-bold text-base text-background leading-6">Negin H.</h3>
                         <p className="text-xs text-blue-100 leading-5">24 May, 2024</p>
@@ -60,13 +62,16 @@ export default function Reviews() {
                     <p className="font-bold text-base text-background">The weight loss plan is fantastic! Not only are the meals fresh and healthy, but they also helped me stay on track with my goals without sacrificing taste.</p>
                 </li>
             </ul>
-            <h1 className="mx-auto text-center font-medium text-4xl lg:text-5xl">People are <span className="font-bold italic">happy to share us</span> on socials</h1>
-            <ul className="flex gap-3 mx-auto w-full max-w-7xl overflow-x-auto h-fit">
-                {socials.map((social, index) => (
-                    <li key={index} className="relative w-64 h-suto shrink-0">
+            <ul className="w-full mx-auto">
+                <Marquee reverse>{socials.map((social, i) => (
+                    <li
+                        key={i}
+                        className="h-full w-64 mx-4 flex items-center justify-start"
+                    >
                         <IKImage src={social} alt='social media sharing' height={251} width={414} />
                     </li>
                 ))}
+                </Marquee>
             </ul>
         </section>
     )
