@@ -16,12 +16,13 @@ export default function Landing1() {
     return (
         <>
             <Hero />
-            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-brown-300 h-px"/>
+            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-brown-300 h-0.5"/>
             <HowItWorks />
             <PromoBanner />
             <Meals />
-            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-blue-50 h-px"/>
+            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-teal-500 h-0.5"/>
             <Plans />
+            <Separator className="w-full lg:w-[calc(100%-4rem)] mx-auto bg-brown-300 h-0.5"/>
             <Reviews />
         </>
     );
