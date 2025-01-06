@@ -1,6 +1,7 @@
 import { LogoIcon } from "@/assets/svg";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
 
 export default function PromoBanner() {
 
@@ -19,7 +20,11 @@ export default function PromoBanner() {
                 ))}
             </div>
             <h1 className="self-start text-4xl max-w-md font-medium leading-tight z-10">Get <span className="italic font-bold">20% OFF</span> on your monthly plan</h1>
-            <Button className="z-10 rounded-lg">See Plans <ArrowRightIcon /></Button>
+            <Button className="z-10 rounded-lg" asChild>
+                <Link href="/pricing">
+                    See Plans <ArrowRightIcon />
+                </Link>
+            </Button>
         </section>
     )
 }
