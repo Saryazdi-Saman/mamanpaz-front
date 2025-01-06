@@ -19,7 +19,7 @@ const meals: TMeal[] = [
         name: 'Ghormeh Sabzi',
         alt: 'image 1',
         description: 'A fragrant herb stew made with slow-cooked lamb and kidney beans',
-        src: 'meals/food-1.png'
+        src: 'meals/khoresht-e-bamiye.jpg'
     },
     {
         id: '2',

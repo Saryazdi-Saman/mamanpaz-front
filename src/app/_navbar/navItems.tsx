@@ -4,11 +4,11 @@ import Link from "next/link";
 export const NAV_ITEMS = [
     {
         name: 'Menu',
-        href: '/meals'
+        href: '/on-the-menu'
     },
     {
         name: 'Plans',
-        href: '/plans',
+        href: '/pricing',
     },
     {
         name: 'About',
@@ -57,7 +57,7 @@ export default function NavItems() {
                     Login
                 </Link>
                 <Link
-                    href='#'
+                    href='/pricing'
                     className={
                         buttonVariants({
                             size: 'sm',

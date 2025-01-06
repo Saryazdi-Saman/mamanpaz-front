@@ -8,7 +8,7 @@ export default function Pricing() {
             <p className="text-center text-lg text-blue-400">
                 Chose a plan we can tailor to you each week. The more you order, the more you save!
             </p>
-            <div className="py-16 px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto md:flex-row relative">
+            <div className="py-16 px-4 flex flex-wrap gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
                 <Plans />
                 {/* <section className="bg-background py-10 px-14">
                     <h2 className="text-2xl font-bold">1. Choose your preference</h2>
@@ -20,6 +20,7 @@ export default function Pricing() {
                 <div className="w-px z-50 hidden md:block bg-background py-8" aria-hidden >
                     <div className="w-full bg-blue-50 h-full"/>
                 </div>
+                <PlanDetails />
                 <PlanDetails />
             </div>
         </section>
