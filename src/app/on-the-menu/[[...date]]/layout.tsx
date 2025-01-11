@@ -2,6 +2,7 @@ import { getMenuDates } from "@/data/services/menu";
 import { MenuPicker } from "./menuPicker";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 type LayoutProps = {
     children: React.ReactNode,
@@ -33,7 +34,11 @@ export default async function MenuLayout({ children, params }: LayoutProps) {
 
                     <div className='flex flex-col w-full sm:flex-row sm:justify-between sm:items-center'>
                         <MenuPicker dates={availableMenus} selectedDate={requestedDate} />
-                        <Button className="hidden sm:block">Get Started</Button>
+                        <Button className="hidden sm:block">
+                            <Link href="/pricing">
+                                Get Started
+                            </Link>
+                        </Button>
                     </div>
                     {children}
                 </div>

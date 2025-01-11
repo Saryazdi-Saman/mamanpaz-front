@@ -33,7 +33,7 @@ const steps: Step[] = [
 
 export default function HowItWorks() {
   return (
-    <section className="flex flex-col gap-16 justify-start items-center pt-16 pb-24 mx-auto lg:px-16">
+    <section className="flex flex-col gap-16 justify-start items-center pt-16 pb-24 mx-auto px-4">
       <h1 className="text-4xl lg:text-5xl font-medium">How it <span className="italic font-bold">really</span> works?</h1>
       <ul className="flex flex-wrap justify-center
                 items-center gap-12
