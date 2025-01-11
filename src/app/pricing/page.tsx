@@ -1,27 +1,16 @@
-import PlanDetails from "./planDetails";
+import FavouritesPlan from "./favourites";
 import Plans from "./plans";
 
 export default function Pricing() {
     return (
-        <section className="min-h-screen px-4 py-16 lg:py-24 lg:px-16 w-full bg-blue-50">
-            <h1 className="text-4xl font-bold text-center">Personalize your meal subscription</h1>
-            <p className="text-center text-lg text-blue-400">
+        <section className="min-h-screen md:px-4 py-16 lg:py-24 lg:px-16 w-full bg-teal-50">
+            <h1 className="text-3xl md:text-4xl font-bold text-center">Personalize your plan</h1>
+            <p className="text-center text-base md:text-lg text-blue-400 px-4 text-balance">
                 Chose a plan we can tailor to you each week. The more you order, the more you save!
             </p>
-            <div className="py-16 px-4 flex flex-wrap gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
+            <div className="py-16 md:px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
                 <Plans />
-                {/* <section className="bg-background py-10 px-14">
-                    <h2 className="text-2xl font-bold">1. Choose your preference</h2>
-                    <ul>
-                        <li>Maman's Favourites</li>
-                        <li>Weight Loss</li>
-                    </ul>
-                </section> */}
-                <div className="w-px z-50 hidden md:block bg-background py-8" aria-hidden >
-                    <div className="w-full bg-blue-50 h-full"/>
-                </div>
-                <PlanDetails />
-                <PlanDetails />
+                <FavouritesPlan />
             </div>
         </section>
     )

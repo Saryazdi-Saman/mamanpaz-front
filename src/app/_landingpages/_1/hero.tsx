@@ -45,15 +45,15 @@ export default function Hero() {
     })
     return (
         // TODO: h-screen should be fixed
-        <section className="hero min-h-[calc(100svh-3.75rem)] h-[calc(100svh-3.75rem)] w-screen flex flex-col snap-end gap-8 xl:gap-0 overflow-clip">
-            <section className="hero-content relative max-h-screen flex-grow bg-background">
+        <section className="hero w-full lg:flex lg:flex-col lg:h-[calc(100svh-5rem)] overflow-clip">
+            <section className="hero-content relative h-[calc(100svh-3.75rem)] bg-background flex-grow lg:h-full">
                 <picture className="z-0 absolute h-full w-full">
                     <source media="(min-width: 1024px)" srcSet={desktop} />
                     <source srcSet={mobile} />
                     <img {...rest} alt="tradditional persian dinner table" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </picture>
-                <div className="px-16 grow h-[calc(100vh-3rem)]
-                xl:h-full lg:py-16">
+                <div className="px-16 h-[calc(100vh-3.75rem)]
+                lg:h-full lg:py-16">
 
                     <div className="h-1/2 lg:h-full w-full relative flex flex-col items-center justify-start lg:items-start">
                         <header className="flex flex-col justify-center z-10 h-full w-full
@@ -70,7 +70,7 @@ export default function Hero() {
                                 </Link>
                             </Button>
                         </header>
-                        <div className="flex gap-3 z-10 items-center text-background self-end">
+                        <div className="flex gap-3 z-10 items-center text-background lg:self-end">
                             <DeliveryIcon aria-hidden="true" />
                             <div>
                                 <p className="text-base font-bold leading-tight">Delivered Food Boxes</p>
@@ -80,14 +80,15 @@ export default function Hero() {
                     </div>
                 </div>
             </section>
-            <section className="z-10 hero-stats h-full px-16 w-full bg-background py-16">
-                <ul className="flex flex-wrap justify-center md:gap-8 xl:gap-16 gap-16">
-                    {/* <ul className="grid auto-rows-fr grid-flow-row lg:auto-cols-fr lg:grid-flow-col md:gap-8 xl:gap-16 gap-16"> */}
+            <section className="hero-stats h-fit px-4 md:px-16 w-full bg-background py-6 ">
+                {/* <ul className="flex flex-wrap justify-center md:gap-8 xl:gap-16 gap-16"> */}
+                <ul className="w-full grid grid-cols-2 grid-rows-2 gap-y-9 gap-x-6 justify-items-center
+                    lg:grid-cols-4 lg:grid-rows-1  lg:gap-8 xl:gap-16">
                     {statsItems.map((stat, index) => (
                         <li key={index} className="max-w-72">
-                            <article className="flex flex-col items-center justify-start gap-4 md:gap-3 xl:gap-6 lg:items-start text-center lg:text-start">
-                                <h2 className="text-5xl lg:text-4xl xl:text-5xl font-medium">{stat.value}</h2>
-                                <p className="text-xl text-muted-foreground">{stat.description}</p>
+                            <article className="flex flex-col items-center justify-start md:gap-3 xl:gap-3 lg:items-start text-center lg:text-start">
+                                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-medium">{stat.value}</h2>
+                                <p className="text-lg md:text-xl text-muted-foreground">{stat.description}</p>
                             </article>
                         </li>
                     ))}
