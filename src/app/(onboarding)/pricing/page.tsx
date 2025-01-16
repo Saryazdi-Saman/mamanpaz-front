@@ -1,5 +1,6 @@
-import FavouritesPlan from "./favourites";
+import MealCounter from "./mealCounter";
 import Plans from "./plans";
+import PlanSchedule from "./planSchedule";
 
 export default function Pricing() {
     return (
@@ -10,7 +11,10 @@ export default function Pricing() {
             </p>
             <div className="py-16 md:px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
                 <Plans />
-                <FavouritesPlan />
+                <div className="flex flex-wrap gap-y-2 gap-x-1">
+                    <MealCounter />
+                    <PlanSchedule />
+                </div>
             </div>
         </section>
     )

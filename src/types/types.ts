@@ -14,7 +14,7 @@ export type TMeal = {
 export type Guest = {
     id: string,
     daily_meals: number,
-    weakly_meals: number,
+    weekly_meals: number,
     delivery: "biweekly" | "triweekly" | "daily",
     phone_number: string,
     phone_verified: boolean,

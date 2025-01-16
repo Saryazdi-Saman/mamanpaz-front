@@ -8,21 +8,25 @@ export default function FavouritesPlan() {
             <ol className="flex flex-wrap gap-y-2 gap-x-1">
                 <li className="bg-background py-10 px-4 sm:px-14 grow">
                     <h2 className="text-xl md:text-2xl font-bold">2. Select number of meals</h2>
-                    <div className="flex justify-between items-start py-4 select-none">
-                        <div className="grid grid-cols-2 grid-rows-5 gap-2 md:gap-3">
-                            {/* <div className="flex items-center justify-center h-10 w-14 md:w-20 border-blue-500 bg-blue-500 text-background shadow-sm shadow-blue-800/80">
-                                <p className="text-2xl font-bold">{1}</p>
-                            </div> */}
+                    <div className="flex justify-start items-start py-4 select-none gap-6 sm:gap-10">
+                        <div className="grid grid-cols-2 grid-rows-5 gap-2 sm:gap-3 text-xl font-semibold">
                             {Array.from({ length: 10 }, (_, i) => (
                                 <div key={i} className="shadow-sm shadow-blue-800/80 cursor-pointer ">
-                                    <input className="hidden [&:checked+label]:border-blue-500 [&:checked+label]:bg-blue-500 [&:checked+label]:text-background" type="radio" value={i} name="meals" id={`${i}_meal`} defaultChecked={i === 0} />
-                                    <label className="flex items-center justify-center h-10 w-14 md:w-20 border border-blue-50 text-blue-200" htmlFor={`${i}_meal`}>
+                                    <input className="[&:checked+button]:border-blue-500 [&:checked+button]:bg-blue-500 [&:checked+button]:text-background" type="radio" value={i} name="meals" id={`${i}_meal`} defaultChecked={i === 0} />
+                                    <button
+                                        disabled={i === 0}
+                                        type='button'
+                                        className="flex items-center justify-center h-10 w-14 sm:w-20 border background-bg border-blue-50 text-blue-200"
+                                    >
+                                        {i + 1}
+                                    </button>
+                                    {/* <label className="flex items-center justify-center h-10 w-14 sm:w-20 border border-blue-50 text-blue-200" htmlFor={`${i}_meal`}>
                                         <p className="text-xl font-semibold ">{i + 1}</p>
-                                    </label>
+                                    </label> */}
                                 </div>
                             ))}
                         </div>
-                        <div className="grid grid-cols-[auto_auto] grid-rows-[1fr_1fr_2fr] items-start justify-items-center gap-x-4 gap-y-2">
+                        <div className="grid grid-cols-[auto_auto] grid-rows-[1fr_1fr_2fr] items-start justify-items-center gap-x-2 sm:gap-x-4 gap-y-2">
                             <p className="">1</p>
                             <p className="justify-self-start">meals per day</p>
                             <p className="">7</p>

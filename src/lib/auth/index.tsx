@@ -19,7 +19,7 @@ type GuestContextType = {
 const GuestContext = createContext<GuestContextType | null>(null);
 
 export function useGuest(): GuestContextType {
-  let context = useContext(GuestContext);
+  const context = useContext(GuestContext);
   if (context === null) {
     throw new Error('useGuest must be used within a GuestProvider');
   }
@@ -33,8 +33,8 @@ export function GuestProvider({
   children: ReactNode;
   guestPromise: Promise<Guest | null>;
 }) {
-  let initialGuest = use(guestPromise);
-  let [guest, setGuest] = useState<Guest | null>(initialGuest);
+  const initialGuest = use(guestPromise);
+  const [guest, setGuest] = useState<Guest | null>(initialGuest);
 
   useEffect(() => {
     if (initialGuest && initialGuest.token) {
