@@ -13,7 +13,7 @@ export default function Pricing() {
                 <Plans />
                 <div className="flex flex-wrap gap-y-2 gap-x-1">
                     <MealCounter />
-                    <PlanSchedule />
+                    {/* <PlanSchedule /> */}
                 </div>
             </div>
         </section>

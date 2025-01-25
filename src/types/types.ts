@@ -33,5 +33,14 @@ export type Session = {
     guest?: Guest;
 }
 
-
+export type Plan = {
+    id: string,
+    name: string,
+    price_per_meal: number,
+    meals_per_week: number,
+    meals_per_day: number,
+    product_variant: {
+        id: string,
+    }
+}
 
