@@ -36,6 +36,7 @@ export type Guest = {
 export type Plan = {
     id: string,
     name: string,
+    slug: string,
     price_per_meal: number,
     meals_per_week: number,
     meals_per_day: number,
@@ -47,6 +48,7 @@ export type Plan = {
 export type DeliverySchedule = {
     id: string,
     name: string,
+    slug: string,
     monday: number,
     tuesday: number,
     wednesday: number,
