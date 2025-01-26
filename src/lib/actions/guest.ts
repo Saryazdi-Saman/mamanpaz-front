@@ -33,8 +33,8 @@ export async function getCart() {
     const cookieStore = await cookies();
     const guestToken = cookieStore.get('guest_session')?.value;
     const cartId = cookieStore.get('cart_id')?.value;
+
     if (!guestToken || !cartId) {
-        
         const { guest_token, cart_id } = await createGuest();
         
         const cart = await getGuestCart({ cart_id });
@@ -57,43 +57,62 @@ export async function getCart() {
     }
 }
 
-export async function updateCart(
-    prevState: HttpTypes.StoreCart, 
-    variant_id: string,
-){
+export async function addToCart(input: FormData){
     const cookieStore = await cookies();
-    const guestToken = cookieStore.get('guest_session')?.value;
-    const cartId = cookieStore.get('cart_id')?.value;
-
-    if (guestToken && cartId) {
-
-        const result = await addPlanToCart(variant_id, cartId);
-        console.log("LOGGING FROM GUEST ACTIONS...")
-        console.log("UPDATE CART...")
-        console.log(result)
-    } else {
-
+    let guestToken = cookieStore.get('guest_session')?.value
+    let cartId = cookieStore.get('cart_id')?.value
+    
+    if (!guestToken || !cartId) {
         const { guest_token, cart_id } = await createGuest();
-
-        cookieStore.set("guest_session", guest_token, {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 30
-        });
-
-        cookieStore.set("cart_id", cart_id, {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 30
-        });
-
-        await addPlanToCart(variant_id, cart_id);
+        guestToken = guest_token;
+        cartId = cart_id;
     }
+
+    const meal_plan_variant = input.get("meal_plan_variant") as string;
+    const delivery_schedule_variant = input.get("delivery_option") as string;
+
+    const result = await addPlanToCart([meal_plan_variant, delivery_schedule_variant], cartId);
+    console.log(result)
+    return 
 }
+
+// export async function updateCart(
+//     prevState: HttpTypes.StoreCart, 
+//     variant_id: string,
+// ){
+//     const cookieStore = await cookies();
+//     const guestToken = cookieStore.get('guest_session')?.value;
+//     const cartId = cookieStore.get('cart_id')?.value;
+
+//     if (guestToken && cartId) {
+
+//         const result = await addPlanToCart(variant_id, cartId);
+//         console.log("LOGGING FROM GUEST ACTIONS...")
+//         console.log("UPDATE CART...")
+//         console.log(result)
+//     } else {
+
+//         const { guest_token, cart_id } = await createGuest();
+
+//         cookieStore.set("guest_session", guest_token, {
+//             path: "/",
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production",
+//             sameSite: "lax",
+//             maxAge: 60 * 60 * 24 * 30
+//         });
+
+//         cookieStore.set("cart_id", cart_id, {
+//             path: "/",
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production",
+//             sameSite: "lax",
+//             maxAge: 60 * 60 * 24 * 30
+//         });
+
+//         await addPlanToCart(variant_id, cart_id);
+//     }
+// }
 
 // export async function updateMealPlan(
 //     prevState: any,

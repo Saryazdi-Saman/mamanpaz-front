@@ -1,7 +1,5 @@
-import { getAvailablePlans } from "@/lib/db/store-queries";
 import { PlanSelector } from "./planSelector";
 import { Plan } from "@/types/types";
-import { Separator } from "@/components/ui/separator";
 
 export default async function PlanOptions({
     plans
@@ -12,8 +10,6 @@ export default async function PlanOptions({
     return (
         <section className="bg-background py-10 sm:px-14 grow select-none">
             <h3 className="text-xl md:text-2xl font-bold select-none py-4">2. Select number of meals</h3>
-            {/* <div className="flex justify-start items-start py-4 select-none gap-6 sm:gap-10">
-                    <PlanSelector plans={availablePlans} /> */}
 
             <div
                 className="grid grid-cols-[1fr_1fr_4fr] grid-rows-5 gap-2 sm:gap-3 w-fit">

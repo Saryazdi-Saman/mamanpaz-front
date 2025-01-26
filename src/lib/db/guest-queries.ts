@@ -56,10 +56,8 @@ export async function getGuest({
 }
 
 
-export async function addPlanToCart(variant_id: string, cart_id: string): Promise<HttpTypes.StoreCart> {
-    console.log("variant_id: ", variant_id)
-    console.log("cart_id: ", cart_id)
-    const { cart } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cart_id}/line-items`, {
+export async function addPlanToCart(variants: string[], cart_id: string): Promise<HttpTypes.StoreCart> {
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/cart/${cart_id}`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -67,21 +65,11 @@ export async function addPlanToCart(variant_id: string, cart_id: string): Promis
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            variant_id,
-            quantity: 1
-        }),
-        next: {
-            tags: ['guest_session']
-        }
+            variants,
+        })
     })
         .then((res) => res.json());
-    console.log("result: ")
-    console.log(cart)
-    console.log("cart.items: ")
-    cart.items.map((item: HttpTypes.StoreCartLineItem) => {
-        console.log(item)
-    })
-    return cart;
+    return result;
 }
 
 // ///////////////// UNVERIFIED FUNCTIONS /////////////////
