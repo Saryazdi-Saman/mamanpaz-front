@@ -28,10 +28,10 @@ export type Guest = {
     token: string,
 }
 
-export type Session = {
-    user?: string;
-    guest?: Guest;
-}
+// export type Session = {
+//     user?: string;
+//     guest?: Guest;
+// }
 
 export type Plan = {
     id: string,
@@ -39,6 +39,22 @@ export type Plan = {
     price_per_meal: number,
     meals_per_week: number,
     meals_per_day: number,
+    product_variant: {
+        id: string,
+    }
+}
+
+export type DeliverySchedule = {
+    id: string,
+    name: string,
+    monday: number,
+    tuesday: number,
+    wednesday: number,
+    thursday: number,
+    friday: number,
+    saturday: number,
+    sunday: number,
+    price: number,
     product_variant: {
         id: string,
     }

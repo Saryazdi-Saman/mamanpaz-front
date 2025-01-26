@@ -1,38 +1,38 @@
 'use client'
 
-import { useActionState } from "react";
-import { useGuest } from "../guest-context";
-import { updatePlanMealCount } from "@/lib/auth/actions";
-import clsx from "clsx";
+import { Plan } from "@/types/types";
+import { usePlanState } from "./plan-context";
 
-export default function PlanSelector({ value }: { value: number }) {
-    const { session, updateSession } = useGuest();
-    const [message, formAction] = useActionState(updatePlanMealCount, null);
-    const updateMealCount = formAction.bind(null, value);
-    const isActive = session.daily_meals === value;
+export function PlanSelector({
+    plan
+}: {
+    plan: Plan
+}) {
+    const { state, updateState } = usePlanState();
     return (
-        <form
-            action={async () => {
-                updateSession({
-                    daily_meals: value,
-                    weekly_meals: value * 7
-                });
-                await updateMealCount();
-            }}>
-            <button
-                disabled={isActive}
-                title={`${value} meals per day\n${(value) * 7} meals per week`}
-                // className="flex items-center justify-center h-10 w-14 sm:w-20 border background-bg border-blue-50 text-blue-200"
-                className={clsx(
-                    "flex items-center justify-center h-10 w-14 sm:w-20 border ",
-                    {
-                        'cursor-default bg-blue-500 text-background border-blue-500': isActive,
-                        'cursor-pointer bg-background border-blue-50 text-blue-200': !isActive
-                    }
-                )}
+        <>
+            <input
+                defaultChecked={state.meal_plan.id === plan.id}
+                type="radio"
+                name="meal_plan_variant"
+                id={plan.id}
+                value={plan.product_variant.id}
+                className="peer hidden"
+                onChange={(e) => {
+                    updateState({
+                        plan_type: "meal_plan",
+                        updates: plan
+                    })
+                }}
+            />
+            <label
+                htmlFor={plan.id}
+                className="flex items-center justify-center h-10 w-14 sm:w-20 border-2 transition-colors 
+                                    cursor-pointer bg-background border-blue-50 text-blue-200
+                                    peer-checked:cursor-default peer-checked:bg-blue-500 peer-checked:text-background peer-checked:border-blue-500"
             >
-                {value}
-            </button>
-        </form>
+                {plan.meals_per_day}
+            </label>
+        </>
     )
 }

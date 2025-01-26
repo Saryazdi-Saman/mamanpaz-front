@@ -1,6 +1,7 @@
 'use client';
 
 import { Guest } from "@/types/types";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createContext, use, useContext, useOptimistic } from "react";
 
 type GuestContextType = {
