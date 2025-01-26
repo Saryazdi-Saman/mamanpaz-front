@@ -1,12 +1,13 @@
-'use client'
-
 import { Separator } from "@/components/ui/separator"
-import { usePlanState } from "./plan-context";
+import { DeliverySchedule } from "@/types/types"
 
-export const DeliverySummary = () => {
-    const { state } = usePlanState();
-    const { product_variant, id, name, price, ...schedule } = state.delivery_schedule;
-    const multiplier = state.meal_plan.meals_per_day;
+export const DeliverySummary = ({
+    schedule,
+    multiplier
+}: {
+    schedule: DeliverySchedule
+    multiplier: number
+}) => {
     return (
         <div className="flex flex-col w-full justify-start gap-2">
             <div className="schedule grid grid-cols-2 grid-rows-7 gap-x-4 gap-y-1">
@@ -28,7 +29,7 @@ export const DeliverySummary = () => {
             <Separator />
             <div className="grid grid-cols-2 gap-x-4 italic">
                 <p>Delivery fee:</p>
-                <p><span className="line-through">${price}</span>&emsp;FREE</p>
+                <p><span className="line-through">${schedule.price}</span>&emsp;FREE</p>
             </div>
         </div>
     )
