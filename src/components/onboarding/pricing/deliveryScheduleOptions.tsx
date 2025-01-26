@@ -11,7 +11,7 @@ export default async function DeliveryScheduleOptions({
 }) {
     const deliveryOptions = await schedule;
     return (
-        <section className="bg-background py-10 px-4 sm:px-14 grow">
+        <section className="bg-background py-10 px-4 sm:px-14">
             <h3 className="text-xl md:text-2xl font-bold select-none py-4">3. Choose your delivery preference</h3>
             <div className="flex flex-row justify-between gap-8">
                 <div className="options flex flex-col gap-4">

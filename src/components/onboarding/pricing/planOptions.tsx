@@ -1,6 +1,7 @@
 import { getAvailablePlans } from "@/lib/db/store-queries";
 import { PlanSelector } from "./planSelector";
 import { Plan } from "@/types/types";
+import { Separator } from "@/components/ui/separator";
 
 export default async function PlanOptions({
     plans
@@ -9,7 +10,7 @@ export default async function PlanOptions({
 }) {
     const availablePlans = await plans;
     return (
-        <section className="bg-background py-10 px-4 sm:px-14 grow select-none">
+        <section className="bg-background py-10 sm:px-14 grow select-none">
             <h3 className="text-xl md:text-2xl font-bold select-none py-4">2. Select number of meals</h3>
             {/* <div className="flex justify-start items-start py-4 select-none gap-6 sm:gap-10">
                     <PlanSelector plans={availablePlans} /> */}
@@ -21,19 +22,24 @@ export default async function PlanOptions({
                         return (
                             <div
                                 key={i}
-                                className="col-start-3 row-start-1 col-span-full row-span-full justify-items-end hidden"
+                                className="col-start-3 row-start-1 col-span-full row-span-full justify-self-center hidden"
                             >
-                                <div className="grid grid-cols-[auto_auto] grid-rows-[1fr_1fr_2fr] items-start justify-items-end gap-x-2 sm:gap-x-6 gap-y-2">
-                                    <p className="">{availablePlans[(i - 1) / 2].meals_per_day}</p>
-                                    <p className="justify-self-start">meals per day</p>
-                                    <p className="">{availablePlans[(i - 1) / 2].meals_per_week}</p>
-                                    <p className="justify-self-start">meals per week</p>
-                                    <div className="flex flex-col items-end">
-
-                                        <p>${availablePlans[(i - 1) / 2].price_per_meal}</p>
+                                <dl className="space-y-1">
+                                    {/* <dt className="text-lg font-semibold">
+                                        summary:
+                                    </dt>
+                                    <Separator /> */}
+                                    <div className="grid grid-cols-[auto_auto] grid-rows-[1fr_1fr_2fr] items-start justify-items-end gap-x-2 sm:gap-x-6 gap-y-1">
+                                        <dd className="justify-self-start">{availablePlans[(i - 1) / 2].meals_per_day === 1 ? "meal" : "meals"} per day</dd>
+                                        <dd className="">{availablePlans[(i - 1) / 2].meals_per_day}</dd>
+                                        <dd className="justify-self-start">meals per week</dd>
+                                        <dd className="">{availablePlans[(i - 1) / 2].meals_per_week}</dd>
+                                        <dd className="justify-self-start self-start">price per meal</dd>
+                                        <div className="flex flex-col items-end">
+                                            <dd>${availablePlans[(i - 1) / 2].price_per_meal}</dd>
+                                        </div>
                                     </div>
-                                    <p className="justify-self-start self-start">per meal</p>
-                                </div>
+                                </dl>
                             </div>
                         )
                     }

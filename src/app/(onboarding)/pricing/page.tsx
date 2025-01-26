@@ -16,7 +16,7 @@ export default function Pricing() {
                 </p>
                 <div className="py-16 md:px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
                     <Plans />
-                    <div className="flex flex-wrap gap-y-2 gap-x-1">
+                    <div className="grid grid-cols-2 gap-y-2 gap-x-2">
                         <PlanOptions plans={availablePlansPromise} />
                         <DeliveryScheduleOptions schedule={deliveryOptionsPromise} />
                     </div>
