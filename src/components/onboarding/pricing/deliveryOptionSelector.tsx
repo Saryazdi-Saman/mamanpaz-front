@@ -1,14 +1,19 @@
-'use client'
-
 import clsx from "clsx";
 import { DeliverySchedule } from "@/types/types";
 import { FaCheckCircle } from "react-icons/fa";
-import { usePlanState } from "./plan-context";
+import Link from "next/link";
 
-export default function DeliveryOptionSelector({ schedule }: { schedule: DeliverySchedule }) {
-    const { state, updateState } = usePlanState();
-    const isActive = state.delivery_schedule.id === schedule.id;
+export default function DeliveryOptionSelector({ 
+    schedule,
+    selectedDelivery,
+    selectedPlan 
+}: { 
+    schedule: DeliverySchedule,
+    selectedDelivery: string | string[],
+    selectedPlan: string | string[]
+ }) {
 
+    const isActive = schedule.slug === selectedDelivery;
     return (
         <>
             <input
@@ -19,15 +24,11 @@ export default function DeliveryOptionSelector({ schedule }: { schedule: Deliver
                 id={schedule.id}
                 value={schedule.product_variant.id}
                 className="hidden"
-                onChange={() => {
-                    updateState({
-                        plan_type: "delivery_schedule",
-                        updates: schedule
-                    })
-                }}
             />
-            <label
-                htmlFor={schedule.id}
+            <Link
+                href={`?plan=${selectedPlan}&delivery=${schedule.slug}`}
+                scroll={false}
+                replace
                 className={clsx(
                     "select-none px-3 md:px-4 py-3 shadow-sm shadow-blue-800/80 border-2 w-36 md:w-48 flex items-start justify-between",
                     {
@@ -48,7 +49,7 @@ export default function DeliveryOptionSelector({ schedule }: { schedule: Deliver
                             'opacity-0': !isActive
                         }
                     )} />
-            </label>
+            </Link>
         </>
     )
 }   
