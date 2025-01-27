@@ -3,6 +3,7 @@ import Plans from "./plans";
 import PlanOptions from "@/components/onboarding/pricing/planOptions";
 import DeliveryScheduleOptions from "@/components/onboarding/pricing/deliveryScheduleOptions";
 import { addToCart } from "@/lib/actions/guest";
+import { Toaster } from "@/components/ui/toaster";
 
 export default async function Pricing({
     searchParams
@@ -23,11 +24,12 @@ export default async function Pricing({
 
     return (
         <section className="min-h-screen md:px-4 py-16 lg:py-24 lg:px-16 w-full bg-teal-50">
+            <Toaster />
             <h1 className="text-3xl md:text-4xl font-bold text-center">Personalize your plan</h1>
             <p className="text-center text-base md:text-lg text-blue-400 px-4 text-balance">
                 Chose a plan we can tailor to you each week. The more you order, the more you save!
             </p>
-            <div className="py-16 md:px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
+            <form className="py-16 md:px-4 flex flex-col gap-y-2 w-full max-w-7xl justify-center mx-auto relative">
                 <Plans />
                 <div className="grid grid-cols-2 gap-y-2 gap-x-2">
                     <PlanOptions
@@ -41,7 +43,7 @@ export default async function Pricing({
                         selectedDelivery={selectedDelivery}
                         multiplier={multiplier} />
                 </div>
-            </div>
+            </form>
         </section>
     )
 }
