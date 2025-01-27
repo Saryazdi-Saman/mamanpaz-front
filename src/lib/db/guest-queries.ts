@@ -1,10 +1,19 @@
 import 'server-only'
-import { HttpTypes } from "@medusajs/types"
 
 type GuestSessionOutput = {
     guest_token: string;
     cart_id: string;
 }
+
+type CartResponse = {
+    success?: {
+        message: string
+    },
+    error?: {
+        message: string
+    }
+}
+
 export async function createGuest(): Promise<GuestSessionOutput> {
     const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
         method: "GET",
@@ -16,50 +25,14 @@ export async function createGuest(): Promise<GuestSessionOutput> {
     return { guest_token: token, cart_id };
 }
 
-export async function getGuestCart({
-    cart_id
-}: {
-    cart_id: string
-}): Promise<HttpTypes.StoreCart> {
-    const { cart } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cart_id}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-        },
-    }).then((res) => res.json());
-    return cart;
-}
-
-
 export async function getGuest({
-    token
+    guestToken,
+    cartId
 }: {
-    token: string
+    guestToken: string | undefined,
+    cartId: string | undefined
 }): Promise<GuestSessionOutput> {
-
-    const response = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-        },
-    })
-
-    if (!response.ok) {
-        const { guest_token, cart_id } = await createGuest();
-        return { guest_token, cart_id };
-    }
-
-    const { cart_id } = await response.json();
-    return { guest_token: token, cart_id };
-}
-
-
-export async function addPlanToCart(variant_id: string, cart_id: string): Promise<HttpTypes.StoreCart> {
-    console.log("variant_id: ", variant_id)
-    console.log("cart_id: ", cart_id)
-    const { cart } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cart_id}/line-items`, {
+    const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -67,41 +40,70 @@ export async function addPlanToCart(variant_id: string, cart_id: string): Promis
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            variant_id,
-            quantity: 1
-        }),
-        next: {
-            tags: ['guest_session']
-        }
-    })
-        .then((res) => res.json());
-    console.log("result: ")
-    console.log(cart)
-    console.log("cart.items: ")
-    cart.items.map((item: HttpTypes.StoreCartLineItem) => {
-        console.log(item)
-    })
-    return cart;
+            token: guestToken,
+            cart_id: cartId
+        })
+    }).then((res) => res.json());
+    return { guest_token: token, cart_id };
 }
 
-// ///////////////// UNVERIFIED FUNCTIONS /////////////////
-// export async function updateGuestSession({
-//     token,
-//     updates
-// }: {
-//     token: string,
-//     updates: Partial<HttpTypes.StoreCart>
-// }): Promise<Response> {
-//     const reqHeaders = new Headers();
-//     reqHeaders.set("x-publishable-api-key", `${process.env.MEDUSA_PUBLIC_KEY}`);
-//     reqHeaders.set("Content-Type", "application/json");
-//     reqHeaders.set("Cookie", `guest_session=${token}`);
+export async function getGuestSession({
+    guestToken,
+    cartId
+}: {
+    guestToken: string | undefined,
+    cartId: string | undefined
+}): Promise<GuestSessionOutput> {
+    if (guestToken && cartId) {
+        return await getGuest({ guestToken, cartId });
+    }
+    else {
+        return await createGuest();
+    }
+}
 
-//     const data = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
-//         method: "PUT",
-//         credentials: "include",
-//         headers: reqHeaders,
-//         body: JSON.stringify({ updates }),
-//     })
-//     return data;
-// }
+export async function addPlanToCart({
+    guestToken,
+    cartId,
+    meal_plan_variant,
+    delivery_schedule_variant
+}: {
+    guestToken: string,
+    cartId: string,
+    meal_plan_variant: string,
+    delivery_schedule_variant: string
+}): Promise<CartResponse> {
+    if (!guestToken || !cartId) {
+        return {
+            error: {
+                message: "Missing guest token or cart id"
+            }
+        }
+    }
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/cart/${cartId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            token: guestToken,
+            meal_plan_variant,
+            delivery_schedule_variant
+        })
+    })
+    
+    if (!result.ok) {
+        return {
+            error: {
+                message: "Something went wrong"
+            }
+        }
+    }
+    return {
+        success: {
+            message: "Successfully added to cart"
+        }
+    }
+}

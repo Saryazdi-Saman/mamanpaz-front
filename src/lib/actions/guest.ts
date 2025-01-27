@@ -1,16 +1,20 @@
 'use server'
 
 import { cookies } from "next/headers";
-import { addPlanToCart, createGuest, getGuest, getGuestCart } from "../db/guest-queries";
-import { HttpTypes } from "@medusajs/types";
+import { addPlanToCart, createGuest } from "../db/guest-queries";
+import { OnboardingStage } from "@/types/types";
+import { redirect } from "next/navigation";
 
 export async function setGuestCookies({
     guest_token,
-    cart_id
+    cart_id,
+    progress_step = OnboardingStage.INITIAL
 }: {
     guest_token: string,
     cart_id: string
+    progress_step: OnboardingStage
 }) {
+    console.log("setGuestCookies called")
     const cookieStore = await cookies();
     cookieStore.set("guest_session", guest_token, {
         path: "/",
@@ -26,95 +30,56 @@ export async function setGuestCookies({
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30
     });
+    cookieStore.set("progress_step", progress_step, {
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30
+    });
     return
 }
 
-export async function getCart() {
+export async function addToCart(prevState: any, input: FormData) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const cookieStore = await cookies();
-    const guestToken = cookieStore.get('guest_session')?.value;
-    const cartId = cookieStore.get('cart_id')?.value;
+    let guestToken = cookieStore.get('guest_session')?.value;
+    let cartId = cookieStore.get('cart_id')?.value;
+
+    const meal_plan_variant = input.get("meal_plan_variant") as string;
+    const delivery_schedule_variant = input.get("delivery_option") as string;
+
     if (!guestToken || !cartId) {
-        
         const { guest_token, cart_id } = await createGuest();
-        
-        const cart = await getGuestCart({ cart_id });
-
-        return {
-            guest_token,
-            cart_id,
-            cart
+        guestToken = guest_token;
+        cartId = cart_id;
+    }
+    try {
+        const { error } = await addPlanToCart({
+            guestToken,
+            cartId,
+            meal_plan_variant,
+            delivery_schedule_variant
+        });
+        if (error) {
+            return {
+                error: true,
+                message: "Something went wrong"
+            }
         }
-    } else {
-        const { guest_token, cart_id } = await getGuest({ token: guestToken });
 
-        const cart = await getGuestCart({ cart_id });
+        // TO DO: ADD Redirect
+        setGuestCookies({
+            guest_token: guestToken,
+            cart_id: cartId,
+            progress_step: OnboardingStage.CREDENTIALS
+        })
 
+    } catch (error) {
         return {
-            guest_token,
-            cart_id,
-            cart
+            error: true,
+            message: "Something went wrong"
         }
     }
+    redirect("/sign-up")
 }
-
-export async function updateCart(
-    prevState: HttpTypes.StoreCart, 
-    variant_id: string,
-){
-    const cookieStore = await cookies();
-    const guestToken = cookieStore.get('guest_session')?.value;
-    const cartId = cookieStore.get('cart_id')?.value;
-
-    if (guestToken && cartId) {
-
-        const result = await addPlanToCart(variant_id, cartId);
-        console.log("LOGGING FROM GUEST ACTIONS...")
-        console.log("UPDATE CART...")
-        console.log(result)
-    } else {
-
-        const { guest_token, cart_id } = await createGuest();
-
-        cookieStore.set("guest_session", guest_token, {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 30
-        });
-
-        cookieStore.set("cart_id", cart_id, {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 30
-        });
-
-        await addPlanToCart(variant_id, cart_id);
-    }
-}
-
-// export async function updateMealPlan(
-//     prevState: any,
-//     data: {
-//         cart_id: string,
-//         variant_id: string
-//     }
-// ) {
-//     console.log("updateMealPlan")
-//     const cookieHeader = (await cookies()).get('guest_session')?.value;
-//     if (!cookieHeader) {
-//         return "Error updating plan's meal count";
-//     }
-
-//     try {
-//         await addPlanToCart(
-//             data.variant_id,
-//             data.cart_id
-//         );
-//         // revalidateTag('guest_session');
-//     } catch (error) {
-//         return "Error updating plan's meal count";
-//     }
-// }

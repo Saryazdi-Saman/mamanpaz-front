@@ -2,6 +2,7 @@ import ScheduleSelector from "@/components/onboarding/pricing/deliveryOptionSele
 import { Button } from "@/components/ui/button";
 import { DeliverySchedule } from "@/types/types";
 import { DeliverySummary } from "./deliverySummary";
+import { AddToCartButton } from "./addToCartButton";
 
 export default async function DeliveryScheduleOptions({
     plans,
@@ -33,9 +34,7 @@ export default async function DeliveryScheduleOptions({
                     multiplier={multiplier}
                 />
             </div>
-            <div className="w-full flex justify-center pt-5">
-                <Button>Continue</Button>
-            </div>
+            <AddToCartButton />
         </section>
     )
 }
