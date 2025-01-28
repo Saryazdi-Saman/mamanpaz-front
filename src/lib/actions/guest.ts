@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { addPlanToCart, createGuest } from "../db/guest-queries";
 import { redirect } from "next/navigation";
-import { OnboardingStage } from "@/types/onboarding";
+import { AddToCartInput, OnboardingStage } from "@/types/onboarding";
 
 export async function setGuestCookies({
     guest_token,
@@ -45,17 +45,21 @@ export async function setGuestCookies({
     return
 }
 
-export async function addToCart(prevState: any, input: FormData) {
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+export async function addToCart(
+    prevState: any, 
+    {meal_plan_variant, delivery_schedule_variant}: AddToCartInput
+) {
+    console.log("meal_variant", meal_plan_variant);
+    console.log("delivery_variant", delivery_schedule_variant);
     const cookieStore = await cookies();
     let guestToken = cookieStore.get('guest_session')?.value;
     let cartId = cookieStore.get('cart_id')?.value;
 
-    const meal_plan_variant = input.get("meal_plan_variant") as string;
-    const delivery_schedule_variant = input.get("delivery_option") as string;
+    // const meal_plan_variant = input.get("meal_plan_variant") as string;
+    // const delivery_schedule_variant = input.get("delivery_option") as string;
 
-    console.log("meal_variant", meal_plan_variant);
-    console.log("delivery_variant", delivery_schedule_variant);
+    // console.log("meal_variant", meal_plan_variant);
+    // console.log("delivery_variant", delivery_schedule_variant);
 
     if (!guestToken || !cartId) {
         const { guest_token, cart_id } = await createGuest();

@@ -5,25 +5,23 @@ import clsx from "clsx";
 export async function PlanSelector({
     plan,
     selectedPlan,
-    selectesDelivery,
+    selectedDelivery,
 }: {
     plan: Plan,
-    selectedPlan: string | string[],
-    selectesDelivery: string | string[]
+    selectedPlan: {
+        slug: string | string[]
+        id: string
+    },
+    selectedDelivery: {
+        slug: string | string[]
+        id: string
+    }
 }) {
-    const isActive = plan.slug === selectedPlan;
+    const isActive = plan.slug === selectedPlan.slug;
     return (
         <>
-            <input
-                defaultChecked={isActive}
-                type="radio"
-                name="meal_plan_variant"
-                id={plan.id}
-                value={plan.product_variant.id}
-                className="hidden"
-            />
             <Link
-                href={`?plan=${plan.slug}&delivery=${selectesDelivery}`}
+                href={`?plan=${plan.slug}&delivery=${selectedDelivery.slug}`}
                 className={clsx(
                     "flex items-center justify-center h-10 w-14 sm:w-20 border-2 transition-colors",
                     {
@@ -33,7 +31,9 @@ export async function PlanSelector({
                 )}
                 scroll={false}
                 replace
-                >{plan.meals_per_day}</Link>
+            >
+                {plan.meals_per_day}
+            </Link>
         </>
     )
 }

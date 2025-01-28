@@ -8,8 +8,14 @@ export default async function PlanOptions({
     selectesDelivery
 }: {
     plans: Plan[]
-    selectedPlan: string | string[]
-    selectesDelivery: string | string[]
+    selectedPlan: {
+        slug: string | string[]
+        id: string
+    }
+    selectesDelivery: {
+        slug: string | string[]
+        id: string
+    }
 }) {
     return (
         <section className="bg-background py-10 sm:px-14 grow select-none">
@@ -18,10 +24,10 @@ export default async function PlanOptions({
                 <div
                     className="grid grid-cols-2 gap-1 w-fit">
                     {plans.map((plan) => (
-                        <PlanSelector key={plan.id} plan={plan} selectedPlan={selectedPlan} selectesDelivery={selectesDelivery} />
+                        <PlanSelector key={plan.id} plan={plan} selectedPlan={selectedPlan} selectedDelivery={selectesDelivery} />
                     ))}
                 </div>
-                <PlanSummary plan={plans.find((plan) => plan.slug === selectedPlan) ?? plans[0]} />
+                <PlanSummary plan={plans.find((plan) => plan.slug === selectedPlan.slug) ?? plans[0]} />
             </div>
         </section>
     )

@@ -7,11 +7,27 @@ import { Loader2 } from "lucide-react";
 import { useActionState, useEffect } from "react";
 import { FaExclamationCircle } from "react-icons/fa";
 
-export function AddToCartButton() {
+export function AddToCartButton({
+    selectedPlan,
+    selectedDelivery
+}: {
+    selectedPlan: {
+        slug: string | string[]
+        id: string
+    }
+    selectedDelivery: {
+        slug: string | string[]
+        id: string
+    }
+}) {
     const [state, action, isPending] = useActionState(
         addToCart,
         undefined,
     )
+    const actionWithVariants = action.bind(null, {
+        meal_plan_variant: selectedPlan.id,
+        delivery_schedule_variant: selectedDelivery.id
+    } )
 
     const { toast } = useToast()
 
@@ -26,7 +42,7 @@ export function AddToCartButton() {
     }, [state])
     return (
         <div className="w-full flex justify-center pt-5">
-            <div className="flex flex-col items-center gap-2 w-full">
+            <form className="flex flex-col items-center gap-2 w-full">
                 {state?.error && <div
                     className="self-stretch h-fit rounded-lg border border-red-600 flex justify-center items-center gap-4 py-2">
                     <FaExclamationCircle className="text-red-700 text-xl" />
@@ -40,14 +56,14 @@ export function AddToCartButton() {
                     </div>
                 </div>}
                 <Button
-                    formAction={action}
+                    formAction={actionWithVariants}
                     disabled={isPending}
                     className="w-fit justify-self-end"
                 >{isPending ? <>
                     <Loader2 className="animate-spin" />
                     Please wait...
                 </> : "Continue"}</Button>
-            </div>
+            </form>
         </div>
     )
 }

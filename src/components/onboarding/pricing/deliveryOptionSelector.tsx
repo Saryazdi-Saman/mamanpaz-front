@@ -9,24 +9,20 @@ export default function DeliveryOptionSelector({
     selectedPlan 
 }: { 
     schedule: DeliverySchedule,
-    selectedDelivery: string | string[],
-    selectedPlan: string | string[]
+    selectedDelivery: {
+        slug: string | string[]
+        id: string
+    },
+    selectedPlan: {
+        slug: string | string[]
+        id: string
+    }
  }) {
 
-    const isActive = schedule.slug === selectedDelivery;
+    const isActive = schedule.slug === selectedDelivery.slug;
     return (
-        <>
-            <input
-                defaultChecked={isActive}
-                title={schedule.name}
-                type="radio"
-                name="delivery_option"
-                id={schedule.id}
-                value={schedule.product_variant.id}
-                className="hidden"
-            />
             <Link
-                href={`?plan=${selectedPlan}&delivery=${schedule.slug}`}
+                href={`?plan=${selectedPlan.slug}&delivery=${schedule.slug}`}
                 scroll={false}
                 replace
                 className={clsx(
@@ -50,6 +46,5 @@ export default function DeliveryOptionSelector({
                         }
                     )} />
             </Link>
-        </>
     )
 }   
