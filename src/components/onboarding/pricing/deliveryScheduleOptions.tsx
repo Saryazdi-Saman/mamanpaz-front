@@ -11,8 +11,14 @@ export default async function DeliveryScheduleOptions({
     multiplier
 }: {
     plans: DeliverySchedule[],
-    selectedPlan: string | string[],
-    selectedDelivery: string | string[],
+    selectedPlan: {
+        slug: string | string[]
+        id: string
+    },
+    selectedDelivery: {
+        slug: string | string[]
+        id: string
+    },
     multiplier: number
 }) {
     return (
@@ -30,11 +36,11 @@ export default async function DeliveryScheduleOptions({
                     ))}
                 </div>
                 <DeliverySummary
-                    schedule={plans.find((plan) => plan.slug === selectedDelivery) ?? plans[0]}
+                    schedule={plans.find((plan) => plan.slug === selectedDelivery.slug) ?? plans[0]}
                     multiplier={multiplier}
                 />
             </div>
-            <AddToCartButton />
+            <AddToCartButton selectedPlan={selectedPlan} selectedDelivery={selectedDelivery} />
         </section>
     )
 }

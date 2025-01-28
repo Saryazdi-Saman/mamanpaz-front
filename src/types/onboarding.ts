@@ -4,6 +4,11 @@ export type CredentialsFormData = {
     password: string;
 }
 
+export type AddToCartInput = {
+    meal_plan_variant: string;
+    delivery_schedule_variant: string;
+}
+
 export interface CredentialsActionResponse {
     success: boolean;
     message: string;
