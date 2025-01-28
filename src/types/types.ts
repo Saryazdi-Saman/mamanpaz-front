@@ -61,12 +61,3 @@ export type DeliverySchedule = {
         id: string,
     }
 }
-
-export enum OnboardingStage {
-    INITIAL = "initial",
-    CREDENTIALS = "credentials",
-    PERSONAL_INFO = "personal_info",
-    ADDRESS = "address",
-    PAYMENT = "payment",
-    COMPLETE = "complete",
-}

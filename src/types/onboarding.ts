@@ -1,0 +1,23 @@
+export type CredentialsFormData = {
+    email: string;
+    phoneNumber: string;
+    password: string;
+}
+
+export interface CredentialsActionResponse {
+    success: boolean;
+    message: string;
+    errors?: {
+        [K in keyof CredentialsFormData]?: string[];
+    }
+    inputs?: Partial<CredentialsFormData>;
+}
+
+export enum OnboardingStage {
+    INITIAL = "initial",
+    CREDENTIALS = "credentials",
+    VERIFY_PHONE_NUMBER = "verify_phone_number",
+    ADDRESS = "address",
+    PAYMENT = "payment",
+    COMPLETE = "complete",
+}
