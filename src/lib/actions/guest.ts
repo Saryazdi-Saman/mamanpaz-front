@@ -8,12 +8,13 @@ import { AddToCartInput, OnboardingStage } from "@/types/onboarding";
 export async function setGuestCookies({
     guest_token,
     cart_id,
-    progress_step = OnboardingStage.INITIAL
+    progress_step
 }: {
     guest_token?: string,
     cart_id?: string
-    progress_step: OnboardingStage
+    progress_step?: OnboardingStage
 }) {
+    const nextStep = progress_step ?? OnboardingStage.INITIAL;
     const cookieStore = await cookies();
     if (guest_token) {
         cookieStore.set("guest_session", guest_token, {
@@ -35,7 +36,7 @@ export async function setGuestCookies({
         });
     }
 
-    cookieStore.set("progress_step", progress_step, {
+    cookieStore.set("progress_step", nextStep, {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -44,9 +45,14 @@ export async function setGuestCookies({
     });
     return
 }
+type AddToCartState = {
+    error?: {
+        message: string
+    }
+}
 
 export async function addToCart(
-    prevState: any, 
+    prevState: AddToCartState | null,
     {meal_plan_variant, delivery_schedule_variant}: AddToCartInput
 ) {
     console.log("meal_variant", meal_plan_variant);
@@ -54,12 +60,6 @@ export async function addToCart(
     const cookieStore = await cookies();
     let guestToken = cookieStore.get('guest_session')?.value;
     let cartId = cookieStore.get('cart_id')?.value;
-
-    // const meal_plan_variant = input.get("meal_plan_variant") as string;
-    // const delivery_schedule_variant = input.get("delivery_option") as string;
-
-    // console.log("meal_variant", meal_plan_variant);
-    // console.log("delivery_variant", delivery_schedule_variant);
 
     if (!guestToken || !cartId) {
         const { guest_token, cart_id } = await createGuest();
@@ -75,8 +75,7 @@ export async function addToCart(
         });
         if (error) {
             return {
-                error: true,
-                message: "Something went wrong"
+                error: {message: "Something went wrong"}
             }
         }
 
@@ -87,10 +86,9 @@ export async function addToCart(
             progress_step: OnboardingStage.CREDENTIALS
         })
 
-    } catch (error) {
+    } catch {
         return {
-            error: true,
-            message: "Something went wrong"
+            error: {message: "Something went wrong"}
         }
     }
     redirect("/sign-up")

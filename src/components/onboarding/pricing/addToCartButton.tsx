@@ -1,6 +1,5 @@
 'use client'
 import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart } from "@/lib/actions/guest";
 import { Loader2 } from "lucide-react";
@@ -22,7 +21,7 @@ export function AddToCartButton({
 }) {
     const [state, action, isPending] = useActionState(
         addToCart,
-        undefined,
+        null,
     )
     const actionWithVariants = action.bind(null, {
         meal_plan_variant: selectedPlan.id,
@@ -61,7 +60,6 @@ export function AddToCartButton({
                     className="w-fit justify-self-end"
                 >{isPending ? <>
                     <Loader2 className="animate-spin" />
-                    Please wait...
                 </> : "Continue"}</Button>
             </form>
         </div>

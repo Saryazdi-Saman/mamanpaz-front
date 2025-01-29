@@ -2,7 +2,6 @@ import { getAvailableDeliveryOptions, getAvailablePlans } from "@/lib/db/store-q
 import Plans from "./plans";
 import PlanOptions from "@/components/onboarding/pricing/planOptions";
 import DeliveryScheduleOptions from "@/components/onboarding/pricing/deliveryScheduleOptions";
-import { addToCart } from "@/lib/actions/guest";
 import { Toaster } from "@/components/ui/toaster";
 
 export default async function Pricing({

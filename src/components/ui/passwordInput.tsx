@@ -3,10 +3,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { EyeIcon, EyeOffIcon } from "lucide-react"
-import clsx from "clsx"
 
-export interface InputProps
-    extends React.InputHTMLAttributes<HTMLInputElement> { }
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
 
 const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, ...props }, ref) => {

@@ -1,15 +1,15 @@
-// export interface TMenu {
-//     meals: TMeal[],
-// }
+export interface TMenu {
+    meals: TMeal[],
+}
 
-// export type TMeal = {
-//     src: string,
-//     title: string,
-//     subtitle?: string,
-//     description?: string,
-//     price: number,
-//     alt: string,
-// }
+export type TMeal = {
+    src: string,
+    title: string,
+    subtitle?: string,
+    description?: string,
+    price: number,
+    alt: string,
+}
 
 // export type Guest = {
 //     id: string,

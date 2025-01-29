@@ -42,7 +42,7 @@ export async function submitCredentials(
             inputs: rawData,
         }
     }
-    
+
     let nextStep: OnboardingStage = OnboardingStage.CREDENTIALS
 
     try {
@@ -98,22 +98,24 @@ export async function submitCredentials(
             nextStep = OnboardingStage.ADDRESS
         }
 
-        if (result.next === OnboardingStage.VERIFY_PHONE_NUMBER){
+        if (result.next === OnboardingStage.VERIFY_PHONE_NUMBER) {
             await setGuestCookies({
                 progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
             })
             nextStep = OnboardingStage.VERIFY_PHONE_NUMBER
         }
     } catch (error) {
-        return {
-            success: false,
-            message: "Something went wrong",
+        if (error) {
+            return {
+                success: false,
+                message: "Something went wrong",
+            }
         }
     }
 
-    if (nextStep === OnboardingStage.VERIFY_PHONE_NUMBER){
+    if (nextStep === OnboardingStage.VERIFY_PHONE_NUMBER) {
         redirect("/verify-phone-number")
-    } else if (nextStep === OnboardingStage.ADDRESS){
+    } else if (nextStep === OnboardingStage.ADDRESS) {
         redirect("/delivery-info")
     } else {
         return {

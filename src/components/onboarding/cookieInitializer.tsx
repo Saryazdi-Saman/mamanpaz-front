@@ -10,10 +10,10 @@ type GuestSession = {
 export function CookieInitializer({ sessionPromise }: { sessionPromise: Promise<GuestSession> }) {
     const session = use(sessionPromise);
     useEffect(() => {
-        const setCookies = async () => {
-            await setGuestCookies(session);
+        const setCookies = async (inputSession: GuestSession) => {
+            await setGuestCookies(inputSession);
         }
-        setCookies();
+        setCookies(session);
     }, []);
 
     return null;

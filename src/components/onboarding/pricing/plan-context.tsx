@@ -2,7 +2,7 @@
 
 import { DeliverySchedule, Plan } from "@/types/types"
 import { useSearchParams } from "next/navigation";
-import { createContext, use, useContext, useMemo, useOptimistic, useState } from "react";
+import { createContext, use, useContext, useMemo, useState } from "react";
 
 type PlanState = {
     meal_plan: Plan,
