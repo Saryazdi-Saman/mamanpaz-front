@@ -31,20 +31,20 @@ import { Loader2 } from "lucide-react"
 export function OtpDialog({
     open,
     setOpen,
+    timer,
+    resetTimer,
+    startTimer,
 }: {
     open: boolean
     setOpen: (open: boolean) => void
+    timer: number
+    resetTimer: () => void
+    startTimer: () => void
 }) {
-    const [timer, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({ countStart: 15 })
+    // const [timer, { startCountdown, resetCountdown }] = useCountdown({ countStart: 60 })
     const isDesktop = useMediaQuery("(min-width: 768px)")
 
     const [loading, setLoading] = React.useState(false)
-
-    React.useEffect(() => {
-        if (open) {
-            startCountdown()
-        }
-    }, [open])
 
     if (isDesktop) {
         return (
@@ -64,8 +64,8 @@ export function OtpDialog({
                                 disabled={loading}
                                     className="text-blue-500 underline"
                                     onClick={() => {
-                                        resetCountdown()
-                                        startCountdown()
+                                        resetTimer()
+                                        startTimer()
                                     }}
                                 >
                                     Resend
@@ -99,8 +99,8 @@ export function OtpDialog({
                                 className="text-blue-500 underline"
                                 disabled={loading}
                                 onClick={() => {
-                                    resetCountdown()
-                                    startCountdown()
+                                    resetTimer()
+                                    startTimer()
                                 }}
                             >
                                 Resend

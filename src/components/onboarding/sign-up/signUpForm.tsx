@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import { useEffect, useActionState, useState } from "react";
 import { OtpDialog } from "./otp-dialog";
+import { useCountdown } from "usehooks-ts";
 
 const initalState: CredentialsActionResponse = {
     success: false,
@@ -15,16 +16,19 @@ const initalState: CredentialsActionResponse = {
 }
 
 export const SignUpForm = () => {
-    const [ dialogOpen, setDialogOpen ] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const [state, formAction, isPending] = useActionState(
         submitCredentials,
         initalState
     );
 
+    const [timer, { startCountdown, resetCountdown }] = useCountdown({ countStart: 60 })
+
     useEffect(() => {
         if (state.errors?.phoneNumber) {
             setDialogOpen(true);
+            startCountdown()
         }
     }, [state]);
 
@@ -79,10 +83,15 @@ export const SignUpForm = () => {
             <Button
                 disabled={isPending}
                 className="w-full"
-                >
+            >
                 {isPending ? <Loader2 className="animate-spin" /> : "Continue"}
             </Button>
-            <OtpDialog open={dialogOpen} setOpen={setDialogOpen} />
+            <OtpDialog
+                open={dialogOpen}
+                setOpen={setDialogOpen}
+                timer={timer}
+                resetTimer={resetCountdown}
+                startTimer={startCountdown} />
         </form>
     )
 }
