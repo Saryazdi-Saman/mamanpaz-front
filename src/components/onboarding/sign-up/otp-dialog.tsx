@@ -25,7 +25,7 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { submitOtp } from "@/lib/actions/credentials"
-import { useMediaQuery } from "usehooks-ts"
+import { useCountdown, useMediaQuery } from "usehooks-ts"
 import { Loader2 } from "lucide-react"
 
 export function OtpDialog({
@@ -35,8 +35,16 @@ export function OtpDialog({
     open: boolean
     setOpen: (open: boolean) => void
 }) {
-
+    const [timer, { startCountdown, stopCountdown, resetCountdown }] = useCountdown({ countStart: 15 })
     const isDesktop = useMediaQuery("(min-width: 768px)")
+
+    const [loading, setLoading] = React.useState(false)
+
+    React.useEffect(() => {
+        if (open) {
+            startCountdown()
+        }
+    }, [open])
 
     if (isDesktop) {
         return (
@@ -48,9 +56,22 @@ export function OtpDialog({
                             Please enter the 4 digit code we sent to your phone number.
                         </DialogDescription>
                     </DialogHeader>
-                    <OTPForm />
-                    <DialogFooter>
-                        <p className="text-left">Didn't receive the code? <a href="#" className="text-blue-500 underline">Resend</a></p>
+                    <OTPForm loading={loading} setLoading={setLoading} />
+                    <DialogFooter className="mr-auto">
+                        {timer === 0 ?
+                            <p className="text-left">Didn't receive code?&nbsp;
+                                <button
+                                disabled={loading}
+                                    className="text-blue-500 underline"
+                                    onClick={() => {
+                                        resetCountdown()
+                                        startCountdown()
+                                    }}
+                                >
+                                    Resend
+                                </button></p>
+                            :
+                            <p className="text-left">{`You will receive a code in ${timer} seconds`}</p>}
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -63,30 +84,52 @@ export function OtpDialog({
                 <DrawerHeader className="text-left">
                     <DrawerTitle>Verify phone number</DrawerTitle>
                     <DrawerDescription>
-                        Please enter the 4 digit code we sent to your phone number.
+                        Enter the 4 digit code sent to your phone number.
                     </DrawerDescription>
                 </DrawerHeader>
-                <OTPForm className="px-4 items-start justify-start" />
+                <OTPForm
+                    loading={loading}
+                    setLoading={setLoading}
+                    className="px-4 items-start justify-start"
+                />
                 <DrawerFooter >
-                    <p>Didn't receive the code? <a href="#" className="text-blue-500 underline">Resend</a></p>
-                    {/* <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose> */}
+                    {timer === 0 ?
+                        <p className="text-left">Didn't receive code?&nbsp;
+                            <button
+                                className="text-blue-500 underline"
+                                disabled={loading}
+                                onClick={() => {
+                                    resetCountdown()
+                                    startCountdown()
+                                }}
+                            >
+                                Resend
+                            </button></p>
+                        :
+                        <p className="text-left">{`You will receive a code in ${timer} seconds`}</p>}
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
     )
 }
 
-function OTPForm({ className }: React.ComponentProps<"form">) {
+function OTPForm({
+    className,
+    loading,
+    setLoading,
 
-    const [loading, setLoading] = React.useState(false)
+}: {
+    className?: string
+    loading: boolean
+    setLoading: (loading: boolean) => void
+}) {
+
     const [error, setError] = React.useState<string | undefined>()
     const [otp, setOTP] = React.useState("")
 
 
     return (
-        <div className={cn("flex flex-col gap-2 w-fit relative pb-6", className)}>
+        <div className={cn("flex flex-col gap-2 w-fit relative text-xl", className)}>
             <div className="h-6 flex">
                 {loading && <div className="w-full justify-center"><Loader2 className="animate-spin" /> </div>}
                 {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -113,11 +156,11 @@ function OTPForm({ className }: React.ComponentProps<"form">) {
                     }
                 }}
             >
-                <InputOTPGroup>
-                    <InputOTPSlot autoFocus index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
+                <InputOTPGroup className="text-2xl">
+                    <InputOTPSlot autoFocus className="text-lg" index={0} />
+                    <InputOTPSlot className="text-lg" index={1} />
+                    <InputOTPSlot className="text-lg" index={2} />
+                    <InputOTPSlot className="text-lg" index={3} />
                 </InputOTPGroup>
             </InputOTP>
         </div>
