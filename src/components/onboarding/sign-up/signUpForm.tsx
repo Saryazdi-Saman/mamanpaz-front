@@ -1,11 +1,13 @@
 'use client'
+
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/passwordInput";
 import { submitCredentials } from "@/lib/actions/credentials";
 import type { CredentialsActionResponse } from "@/types/onboarding";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
-import { useActionState } from "react";
+import { useEffect, useActionState, useState } from "react";
+import { OtpDialog } from "./otp-dialog";
 
 const initalState: CredentialsActionResponse = {
     success: false,
@@ -13,10 +15,20 @@ const initalState: CredentialsActionResponse = {
 }
 
 export const SignUpForm = () => {
+    const [ dialogOpen, setDialogOpen ] = useState(false);
+
     const [state, formAction, isPending] = useActionState(
         submitCredentials,
         initalState
     );
+
+    useEffect(() => {
+        if (state.errors?.phoneNumber) {
+            setDialogOpen(true);
+        }
+    }, [state]);
+
+
     return (
         <form action={formAction} className="flex flex-col gap-y-1 w-full">
             <legend className="text-xl text-muted-foreground font-bold pb-4 leading-none tracking-tight">Create your account</legend>
@@ -66,9 +78,11 @@ export const SignUpForm = () => {
             </div>
             <Button
                 disabled={isPending}
-                className="w-full">
+                className="w-full"
+                >
                 {isPending ? <Loader2 className="animate-spin" /> : "Continue"}
             </Button>
+            <OtpDialog open={dialogOpen} setOpen={setDialogOpen} />
         </form>
     )
 }

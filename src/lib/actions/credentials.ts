@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from "zod";
-import { CredentialsActionResponse, CredentialsFormData, OnboardingStage } from "@/types/onboarding";
+import { CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse } from "@/types/onboarding";
 import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -122,5 +122,39 @@ export async function submitCredentials(
             success: false,
             message: "Something went wrong",
         }
+    }
+}
+
+const otpSchema = z.object({
+    otp: z.string().trim().min(4, "pin must be 4 digits").max(4, "pin must be 4 digits"),
+})
+export async function submitOtp(
+    input: string
+): Promise<OTPActionResponse> {
+
+    await new Promise(resolve => setTimeout(resolve, 4000))
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
+
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
+    const rawData: {otp: string} = {
+        otp: input,
+    }
+
+    //validate the data
+    const validatedData = otpSchema.safeParse(rawData);
+    if (!validatedData.success) {
+        return {
+            success: false,
+            error: "pin must be 4 digits",
+        }
+    }
+
+    console.log("validatedData", validatedData.data)
+    return {
+        success: true,
+        error: "not implemented",
     }
 }

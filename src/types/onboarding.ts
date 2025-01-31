@@ -18,6 +18,11 @@ export interface CredentialsActionResponse {
     inputs?: Partial<CredentialsFormData>;
 }
 
+export type OTPActionResponse = {
+    success: boolean;
+    error?: string;
+}
+
 export enum OnboardingStage {
     INITIAL = "initial",
     CREDENTIALS = "credentials",
