@@ -5,7 +5,7 @@ import { CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPAct
 import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { addCredentials } from "../db/guest-account";
+import { addCredentials, requestOTPMessage, verifyOTP } from "../db/guest-account";
 import { setGuestCookies } from "./guest";
 import { createGuest } from "../db/guest-queries";
 
@@ -19,20 +19,20 @@ export async function submitCredentials(
     prevState: CredentialsActionResponse | null,
     formData: FormData
 ): Promise<CredentialsActionResponse> {
-        
+
     const cookieStore = await cookies()
     const guestToken = cookieStore.get("guest_session")?.value;
-    
+
     if (!guestToken || guestToken === "") {
         redirect("/pricing")
     }
-    
+
     const rawData: CredentialsFormData = {
         email: formData.get("email") as string,
         phoneNumber: formData.get("phone_number") as string,
         password: formData.get("password") as string,
     }
-    
+
     const hasSameValue = (
         prevState?.inputs?.phoneNumber === rawData.phoneNumber &&
         prevState?.inputs?.email === rawData.email &&
@@ -70,7 +70,7 @@ export async function submitCredentials(
             console.log(rawData)
             return {
                 success: false,
-                errors: { phoneNumber: ["Invalid phone number"]},
+                errors: { phoneNumber: ["Invalid phone number"] },
                 inputs: {
                     ...rawData,
                 },
@@ -136,9 +136,9 @@ export async function submitCredentials(
                 await setGuestCookies({
                     progress_step: OnboardingStage.ADDRESS
                 })
-                redirect("/delivery-info")
-            } 
-            
+                redirect("/checkout/details")
+            }
+
             await setGuestCookies({
                 progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
             })
@@ -164,8 +164,6 @@ const otpSchema = z.object({
 export async function submitOtp(
     input: string
 ): Promise<OTPActionResponse> {
-
-    await new Promise(resolve => setTimeout(resolve, 4000))
     const cookieStore = await cookies()
     const guestToken = cookieStore.get("guest_session")?.value;
 
@@ -181,13 +179,47 @@ export async function submitOtp(
     if (!validatedData.success) {
         return {
             success: false,
-            error: "pin must be 4 digits",
+            error: "PIN must be 4 digits",
         }
     }
 
-    console.log("validatedData", validatedData.data)
-    return {
-        success: true,
-        error: "not implemented",
+    const result = await verifyOTP({
+        token: guestToken,
+        otp: validatedData.data.otp
+    })
+
+    if (!result.success) {
+        if (result.error) {
+            return {
+                success: false,
+                error: "Something went wrong, please try again.",
+            }
+        } else {
+            return {
+                success: false,
+                error: "Invalid PIN",
+            }
+        }
+    } else {
+        await setGuestCookies({
+            progress_step: OnboardingStage.ADDRESS
+        })
+        redirect("/checkout/details")
     }
+}
+
+
+export async function resendOTP() {
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
+
+    console.log("actions/credentials.ts:resendOTP")
+    console.log("guestToken", guestToken)
+
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
+
+    await requestOTPMessage(guestToken)
+    return
 }

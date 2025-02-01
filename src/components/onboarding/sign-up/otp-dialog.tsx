@@ -17,14 +17,14 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer"
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
+import { REGEXP_ONLY_DIGITS } from "input-otp"
 
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { submitOtp } from "@/lib/actions/credentials"
+import { resendOTP, submitOtp } from "@/lib/actions/credentials"
 import { useCountdown, useMediaQuery } from "usehooks-ts"
 import { Loader2 } from "lucide-react"
 
@@ -63,9 +63,10 @@ export function OtpDialog({
                                 <button
                                 disabled={loading}
                                     className="text-blue-500 underline"
-                                    onClick={() => {
+                                    onClick={async () => {
                                         resetTimer()
                                         startTimer()
+                                        await resendOTP()
                                     }}
                                 >
                                     Resend
@@ -94,13 +95,14 @@ export function OtpDialog({
                 />
                 <DrawerFooter >
                     {timer === 0 ?
-                        <p className="text-left">Didn't receive code?&nbsp;
+                        <p className="text-left ">Didn't receive code?&nbsp;
                             <button
                                 className="text-blue-500 underline"
                                 disabled={loading}
-                                onClick={() => {
+                                onClick={async () => {
                                     resetTimer()
                                     startTimer()
+                                    await resendOTP()
                                 }}
                             >
                                 Resend
@@ -139,7 +141,7 @@ function OTPForm({
                 disabled={loading}
                 autoFocus
                 maxLength={4}
-                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                pattern={REGEXP_ONLY_DIGITS}
                 autoComplete="one-time-code"
                 value={otp}
                 onChange={async (value) => {

@@ -47,3 +47,58 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
         return { success, error };
     }
 }
+
+export async function requestOTPMessage(token: string): Promise<undefined> {
+    try {
+        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}/otp`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+            },
+        })
+        return
+    } catch {
+        return
+    }
+}
+
+type VerifyOTPActionResponse = {
+    success: boolean;
+    error?: boolean;
+}
+
+export async function verifyOTP({
+    token, 
+    otp
+}: { 
+    token: string, 
+    otp: string 
+}): Promise<VerifyOTPActionResponse> {
+    const response: VerifyOTPActionResponse = {
+        success: false,
+    }
+    try {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}/otp`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                otp
+            })
+        }).then((res) => res.json());
+        if (result.success) {
+            response.success = true
+        } else {
+            if (result.error && result.error !== "INVALID_OTP") {
+                response.error = true
+            }
+        }
+    } catch {
+        response.error = true
+    }
+    return response
+}
