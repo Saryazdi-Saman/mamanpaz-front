@@ -15,11 +15,17 @@ type AddCredentialsInput = {
     email: string;
 }
 
-type CredentialsRegisterationStatus = {
-    success: boolean;
-    error?: CredentialsError;
-    next?: OnboardingStage.VERIFY_PHONE_NUMBER | OnboardingStage.ADDRESS;
+type CredentialsRegisterationError = {
+    success: false;
+    error: CredentialsError;
 }
+
+type CredentialsRegisterationSuccess = {
+    success: true;
+    next: OnboardingStage.VERIFY_PHONE_NUMBER | OnboardingStage.ADDRESS;
+}
+
+type CredentialsRegisterationStatus = CredentialsRegisterationError | CredentialsRegisterationSuccess;
 
 export async function addCredentials(input: AddCredentialsInput): Promise<CredentialsRegisterationStatus> {
     const { success, error, next } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${input.token}/credentials`, {
@@ -35,5 +41,9 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
             email: input.email
         })
     }).then((res) => res.json());
-    return { success, error, next };
+    if (success) {
+        return { success, next };
+    } else {
+        return { success, error };
+    }
 }

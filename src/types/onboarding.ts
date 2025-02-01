@@ -4,6 +4,11 @@ export type CredentialsFormData = {
     password: string;
 }
 
+export enum RegistrationError {
+    EMAIL_EXISTS = "EMAIL_EXISTS",
+    SERVER_ERROR = "SERVER_ERROR",
+}
+
 export type AddToCartInput = {
     meal_plan_variant: string;
     delivery_schedule_variant: string;
@@ -11,11 +16,13 @@ export type AddToCartInput = {
 
 export interface CredentialsActionResponse {
     success: boolean;
-    message: string;
     errors?: {
         [K in keyof CredentialsFormData]?: string[];
+    } & {
+        other?: RegistrationError;
     }
     inputs?: Partial<CredentialsFormData>;
+    hasChanged: boolean;
 }
 
 export type OTPActionResponse = {
