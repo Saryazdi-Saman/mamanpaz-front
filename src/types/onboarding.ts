@@ -42,3 +42,8 @@ export enum OnboardingStage {
     PAYMENT = "payment",
     COMPLETE = "complete",
 }
+
+export type Guest = {
+    email: string;
+    phone_number: string;
+}

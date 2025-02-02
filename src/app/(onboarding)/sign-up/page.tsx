@@ -7,7 +7,7 @@ export default function SignUpPage() {
         <section className="min-h-screen md:px-4 lg:px-16 w-full bg-teal-50">
             <ScrollToTop />
             <h1 className="py-16 text-3xl md:text-4xl font-bold text-center">Enjoy 20% off for the first month-plus, your first week ships free!</h1>
-            <div className="py-8 px-4 md:px-6 flex flex-col gap-y-1 w-full max-w-lg border-2 border-blue-50 justify-start items-start mx-auto relative bg-teal-50 rounded-md shadow-lg">
+            <div className="py-8 px-4 md:px-6 flex flex-col gap-y-1 w-full max-w-lg border border-blue-50 justify-start items-start mx-auto relative bg-teal-50 rounded-md shadow-lg">
                 <SignUpForm />
                 <p
                     className="pt-4 text-sm text-muted-foreground"
