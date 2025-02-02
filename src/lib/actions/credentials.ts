@@ -10,9 +10,21 @@ import { setGuestCookies } from "./guest";
 import { createGuest } from "../db/guest-queries";
 
 const credentialsSchema = z.object({
-    email: z.string().trim().email(),
-    phoneNumber: z.string().trim().min(10, "Invalid phone number").max(10, "Invalid phone number"),
-    password: z.string().trim().min(8, "Password must be at least 8 characters").max(20, "Password must be at most 20 characters"),
+    email: z.string()
+        .trim()
+        .toLowerCase()
+        .email(),
+
+    phoneNumber: z.string()
+        .trim()
+        .min(10, "Phone number must be 10 digits")
+        .max(10, "Phone number must be 10 digits")
+        .refine((val) => /^\d+$/.test(val), "Phone number can only contain numbers"),
+
+    password: z.string()
+        .trim()
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be at most 20 characters"),
 })
 
 export async function submitCredentials(
@@ -159,7 +171,11 @@ export async function submitCredentials(
 }
 
 const otpSchema = z.object({
-    otp: z.string().trim().min(4, "pin must be 4 digits").max(4, "pin must be 4 digits"),
+    otp: z.string()
+    .trim()
+    .min(4, "pin must be 4 digits")
+    .max(4, "pin must be 4 digits")
+    .refine((val) => /^\d+$/.test(val), "PIN can only contain numbers"),
 })
 export async function submitOtp(
     input: string
