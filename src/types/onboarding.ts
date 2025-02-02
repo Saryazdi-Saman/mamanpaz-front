@@ -7,6 +7,7 @@ export type CredentialsFormData = {
 export enum RegistrationError {
     EMAIL_EXISTS = "EMAIL_EXISTS",
     SERVER_ERROR = "SERVER_ERROR",
+    GUEST_NOT_FOUND = "GUEST_NOT_FOUND",
 }
 
 export type AddToCartInput = {
@@ -15,7 +16,10 @@ export type AddToCartInput = {
 }
 
 export interface CredentialsActionResponse {
-    success: boolean;
+    // success: boolean;
+    success?: {
+        next: OnboardingStage.VERIFY_PHONE_NUMBER | OnboardingStage.ADDRESS;
+    };
     errors?: {
         [K in keyof CredentialsFormData]?: string[];
     } & {
