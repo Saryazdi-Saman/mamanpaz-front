@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/passwordInput";
 import { submitCredentials } from "@/lib/actions/credentials";
-import type { CredentialsActionResponse } from "@/types/onboarding";
+import { type CredentialsActionResponse } from "@/types/onboarding";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
 import { useEffect, useActionState, useState } from "react";
@@ -12,7 +12,6 @@ import { useCountdown } from "usehooks-ts";
 import Link from "next/link";
 
 const initalState: CredentialsActionResponse = {
-    success: false,
     hasChanged: true,
 }
 
