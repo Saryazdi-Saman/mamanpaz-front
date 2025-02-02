@@ -45,6 +45,11 @@ export async function submitCredentials(
         password: formData.get("password") as string,
     }
 
+    const response: CredentialsActionResponse = {
+        hasChanged: true,
+        inputs: rawData,
+    }
+
     const hasSameValue = (
         prevState?.inputs?.phoneNumber === rawData.phoneNumber &&
         prevState?.inputs?.email === rawData.email &&
@@ -52,23 +57,17 @@ export async function submitCredentials(
     )
 
     if (hasSameValue) {
-        console.log("Credentials form data is unchanged")
-        return {
-            success: prevState?.success,
-            inputs: rawData,
-            errors: prevState?.errors,
-            hasChanged: false,
-        };
+        response.success = prevState?.success;
+        response.errors = prevState?.errors;
+        response.hasChanged = false;
+        return response;
     }
+
     //validate the data
     const validatedData = credentialsSchema.safeParse(rawData);
     if (!validatedData.success) {
-        return {
-            success: false,
-            errors: validatedData.error.flatten().fieldErrors,
-            inputs: rawData,
-            hasChanged: true,
-        }
+        response.errors = validatedData.error.flatten().fieldErrors;
+        return response;
     }
 
     try {
@@ -78,16 +77,8 @@ export async function submitCredentials(
         const isValid = phoneNumberUtil.isValidNumber(numberObject)
 
         if (!isValid) {
-            console.log("Invalid phone number")
-            console.log(rawData)
-            return {
-                success: false,
-                errors: { phoneNumber: ["Invalid phone number"] },
-                inputs: {
-                    ...rawData,
-                },
-                hasChanged: true,
-            }
+            response.errors = { phoneNumber: ["Invalid phone number"] };
+            return response;
         }
 
         const result = await addCredentials({
@@ -100,82 +91,64 @@ export async function submitCredentials(
         if (!result.success) {
             switch (result.error) {
                 case "EMAIL_EXISTS":
-                    return {
-                        success: false,
-                        errors: {
-                            other: RegistrationError.EMAIL_EXISTS,
-                        },
-                        inputs: rawData,
-                        hasChanged: true,
-                    }
+                    response.errors = {
+                        other: RegistrationError.EMAIL_EXISTS,
+                    };
 
                 case "INVALID_PHONE_NUMBER":
-                    return {
-                        success: false,
-                        errors: { phoneNumber: ["Invalid phone number"] },
-                        inputs: rawData,
-                        hasChanged: true,
-                    }
+                    response.errors = { phoneNumber: ["Invalid phone number"] };
 
                 case "GUEST_NOT_FOUND":
                     const { guest_token, cart_id } = await createGuest();
                     await setGuestCookies({
                         guest_token,
                         cart_id,
-                        progress_step: OnboardingStage.ADDRESS
+                        progress_step: OnboardingStage.INITIAL
                     })
-                    redirect("/pricing")
+                    response.errors = { other: RegistrationError.GUEST_NOT_FOUND };
 
                 case "OTHER":
-                    return {
-                        success: false,
-                        errors: { other: RegistrationError.SERVER_ERROR },
-                        inputs: rawData,
-                        hasChanged: true,
-                    }
-
+                    response.errors = { other: RegistrationError.SERVER_ERROR };
+                    
                 default:
-                    return {
-                        success: false,
-                        errors: { other: RegistrationError.SERVER_ERROR },
-                        inputs: rawData,
-                        hasChanged: true,
-                    }
-
+                    response.errors = { other: RegistrationError.SERVER_ERROR };
             }
         } else {
             if (result.next === OnboardingStage.ADDRESS) {
                 await setGuestCookies({
                     progress_step: OnboardingStage.ADDRESS
                 })
-                redirect("/checkout/details")
-            }
-
-            await setGuestCookies({
-                progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
-            })
-            return {
-                success: true,
-                inputs: rawData,
-                hasChanged: true,
+                response.success = {
+                    next: OnboardingStage.ADDRESS
+                };
+            } else {
+                await setGuestCookies({
+                    progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
+                })
+                response.success = {
+                    next: OnboardingStage.VERIFY_PHONE_NUMBER
+                };
             }
         }
     } catch {
-        return {
-            success: false,
-            errors: { other: RegistrationError.SERVER_ERROR },
-            inputs: rawData,
-            hasChanged: true,
+        response.errors = { other: RegistrationError.SERVER_ERROR };
+    } finally {
+        if (response.success && response.success.next === OnboardingStage.ADDRESS) {
+            redirect("/checkout/details")
         }
+        if (response.errors && response.errors.other === RegistrationError.GUEST_NOT_FOUND) {
+            redirect("/pricing")
+        }
+        return response;
     }
 }
 
 const otpSchema = z.object({
     otp: z.string()
-    .trim()
-    .min(4, "pin must be 4 digits")
-    .max(4, "pin must be 4 digits")
-    .refine((val) => /^\d+$/.test(val), "PIN can only contain numbers"),
+        .trim()
+        .min(4, "pin must be 4 digits")
+        .max(4, "pin must be 4 digits")
+        .refine((val) => /^\d+$/.test(val), "PIN can only contain numbers"),
 })
 export async function submitOtp(
     input: string

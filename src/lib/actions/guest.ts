@@ -14,8 +14,9 @@ export async function setGuestCookies({
     cart_id?: string
     progress_step?: OnboardingStage
 }) {
-    const nextStep = progress_step ?? OnboardingStage.INITIAL;
     const cookieStore = await cookies();
+    const currentStep = cookieStore.get("progress_step")?.value;
+    const nextStep = progress_step ?? currentStep ?? OnboardingStage.INITIAL;
     if (guest_token) {
         cookieStore.set("guest_session", guest_token, {
             path: "/",
