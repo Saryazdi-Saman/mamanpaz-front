@@ -25,8 +25,6 @@ export const SignUpForm = () => {
     const [timer, { startCountdown, resetCountdown }] = useCountdown({ countStart: 60 })
 
     useEffect(() => {
-        console.log("state.hasChanged")
-        console.log(state.inputs?.phoneNumber)
         if (state.success) {
             setDialogOpen(true);
             if (state.hasChanged) {
