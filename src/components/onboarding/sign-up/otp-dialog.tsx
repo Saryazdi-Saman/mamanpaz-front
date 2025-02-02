@@ -25,7 +25,7 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { resendOTP, submitOtp } from "@/lib/actions/credentials"
-import { useCountdown, useMediaQuery } from "usehooks-ts"
+import { useMediaQuery } from "usehooks-ts"
 import { Loader2 } from "lucide-react"
 
 export function OtpDialog({
@@ -59,7 +59,7 @@ export function OtpDialog({
                     <OTPForm loading={loading} setLoading={setLoading} />
                     <DialogFooter className="mr-auto">
                         {timer === 0 ?
-                            <p className="text-left">Didn't receive code?&nbsp;
+                            <p className="text-left">Didn&apos;t receive code?&nbsp;
                                 <button
                                 disabled={loading}
                                     className="text-blue-500 underline"
@@ -95,7 +95,7 @@ export function OtpDialog({
                 />
                 <DrawerFooter >
                     {timer === 0 ?
-                        <p className="text-left ">Didn't receive code?&nbsp;
+                        <p className="text-left ">Didn&apos;t receive code?&nbsp;
                             <button
                                 className="text-blue-500 underline"
                                 disabled={loading}
