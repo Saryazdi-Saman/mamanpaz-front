@@ -69,4 +69,9 @@ export enum OnboardingStage {
 export type Guest = {
     email: string;
     phone_number: string;
+    name?:string;
+    last_name?:string;
+    address_line1?:string;
+    city?:string;
+    postal_code?:string;
 }

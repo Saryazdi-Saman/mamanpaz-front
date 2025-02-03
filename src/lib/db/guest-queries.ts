@@ -29,10 +29,7 @@ export async function getGuest(token: string): Promise<Guest> {
         redirect('/pricing')
     }
     const { guest } = await result.json();
-    return {
-        email: guest.email,
-        phone_number: guest.phone_number,
-    };
+    return guest;
 }
 
 export async function createGuest(): Promise<GuestSessionOutput> {
