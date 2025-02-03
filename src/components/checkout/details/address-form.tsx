@@ -80,6 +80,12 @@ export default function AddressForm({
 
                 {state.errors?.address_line3 && <p className="text-red-500 text-sm">{state.errors.address_line3[0]}</p>}
             </div>
+            {state.errors?.other && state.errors.other === "SERVER_ERROR" &&
+                <div className="border-2 border-blue-500 text-base rounded-md py-4 px-4">
+                    <p className="font-semibold">Uh Oh! Something went wrong.</p>
+                    <p>Please try again later.</p>
+                </div>
+            }
             <Button
                 className=" tracking-wider mt-2 sm:mt-4">
                 Continue to Payment

@@ -5,7 +5,7 @@ import { AddressFormData, AddressFormResponse, CredentialsActionResponse, Creden
 import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { addCredentials, requestOTPMessage, verifyOTP } from "../db/guest-account";
+import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
 import { setGuestCookies } from "./guest";
 import { createGuest } from "../db/guest-queries";
 import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
@@ -194,11 +194,11 @@ export async function submitAddressForm(
 ): Promise<AddressFormResponse> {
     const cookieStore = await cookies()
     const guestToken = cookieStore.get("guest_session")?.value;
-    
+
     if (!guestToken || guestToken === "") {
         redirect("/pricing")
     }
-    
+
     const rawData: AddressFormData = {
         name: formData.get("name") as string,
         lastname: formData.get("lastname") as string,
@@ -215,10 +215,8 @@ export async function submitAddressForm(
     const response: AddressFormResponse = {
         inputs: rawData
     }
-    
+
     const validatedData = addressFormSchema.safeParse(rawData);
-    console.log("validatedData", validatedData.data)
-    console.log(validatedData.error?.flatten().fieldErrors)
     if (!validatedData.success) {
         response.errors = validatedData.error.flatten().fieldErrors;
         return response;
@@ -249,6 +247,39 @@ export async function submitAddressForm(
             address_line1: ["Invalid address"]
         }
         return response;
+    }
+
+    const dbQueryResult = await addCustomerInfo({
+        guestToken,
+        name: validatedData.data.name,
+        lastname: validatedData.data.lastname,
+        address_line1: validatedData.data.address_line1,
+        address_line2: rawData.address_line2,
+        address_line3: rawData.address_line3,
+        postal_code: validatedData.data.postal_code,
+        city: validatedData.data.city,
+        district: rawData.district,
+        country: rawData.country,
+        neighborhood: rawData.neighborhood,
+        region: rawData.region
+    })
+
+    if (!dbQueryResult.success) {
+        switch (dbQueryResult.error) {
+            case "GUEST_NOT_FOUND":
+                const { guest_token, cart_id } = await createGuest();
+                await setGuestCookies({
+                    guest_token,
+                    cart_id,
+                    progress_step: OnboardingStage.INITIAL
+                })
+                redirect('/pricing')
+            case "OTHER":
+                response.errors = {
+                    other: RegistrationError.SERVER_ERROR,
+                };
+                return response;
+        }
     }
 
     redirect("/checkout/payment")

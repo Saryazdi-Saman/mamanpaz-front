@@ -51,7 +51,9 @@ export type AddressFormData = {
 export type AddressFormResponse = {
     errors?: {
         [K in keyof AddressFormData]?: string[];
-    };
+    } & {
+        other?: RegistrationError; 
+    }
     inputs?: Partial<AddressFormData>;
 }
 
