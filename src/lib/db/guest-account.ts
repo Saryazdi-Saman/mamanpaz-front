@@ -69,11 +69,11 @@ type VerifyOTPActionResponse = {
 }
 
 export async function verifyOTP({
-    token, 
+    token,
     otp
-}: { 
-    token: string, 
-    otp: string 
+}: {
+    token: string,
+    otp: string
 }): Promise<VerifyOTPActionResponse> {
     const response: VerifyOTPActionResponse = {
         success: false,
@@ -101,4 +101,84 @@ export async function verifyOTP({
         response.error = true
     }
     return response
+}
+
+type CustomerInfoResponse = {
+    success: boolean,
+    error?: "GUEST_NOT_FOUND" | "OTHER"
+}
+
+export async function addCustomerInfo({
+    guestToken,
+    name,
+    lastname,
+    address_line1,
+    address_line2,
+    address_line3,
+    postal_code,
+    city,
+    district,
+    country,
+    neighborhood,
+    region
+}: {
+    guestToken: string,
+    name: string,
+    lastname: string,
+    address_line1: string,
+    address_line2: string,
+    address_line3: string,
+    postal_code: string,
+    city: string,
+    district?: string,
+    country: string,
+    neighborhood?: string,
+    region: string
+}): Promise<CustomerInfoResponse> {
+    const response:CustomerInfoResponse = {
+        success: false,
+    }
+    try {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${guestToken}/address`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                lastname,
+                address_line1,
+                address_line2,
+                address_line3,
+                postal_code,
+                city,
+                district,
+                country,
+                neighborhood,
+                region
+            })
+        })
+        if (!result.ok) {
+            response.error = "OTHER"
+            return response
+        }
+        const data = await result.json();
+        if (data.error && data.error === "GUEST_NOT_FOUND") {
+            response.error = "GUEST_NOT_FOUND"
+            return response
+        }
+        if (data.error && data.error === "OTHER") {
+            response.error = "OTHER"
+            return response
+        }
+
+        response.success = true
+        return response
+    } catch {
+        response.error = "OTHER"
+        return response
+    }
+
 }

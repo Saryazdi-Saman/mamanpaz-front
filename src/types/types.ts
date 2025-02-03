@@ -11,28 +11,6 @@ export type TMeal = {
     alt: string,
 }
 
-// export type Guest = {
-//     id: string,
-//     daily_meals: number,
-//     weekly_meals: number,
-//     delivery: "biweekly" | "triweekly" | "daily",
-//     phone_number: string,
-//     phone_verified: boolean,
-//     email: string,
-//     email_verified: boolean,
-//     password: string,
-//     name: string,
-//     last_name: string,
-//     address: string,
-//     city: string,
-//     token: string,
-// }
-
-// export type Session = {
-//     user?: string;
-//     guest?: Guest;
-// }
-
 export type Plan = {
     id: string,
     name: string,
@@ -60,4 +38,39 @@ export type DeliverySchedule = {
     product_variant: {
         id: string,
     }
+}
+
+export type AddressAutocomplete = {
+    name: string,
+    context: {
+        address: {
+            address_number: string,
+            name: string,
+            street_name: string,
+        },
+        country: {
+            country_code: string,
+            name: string,
+        },
+        district?: {
+            name: string,
+        },
+        neighborhood?: {
+            name: string,
+        },
+        place: {
+            name: string,
+        },
+        postcode: {
+            name: string,
+        },
+        region: {
+            name: string,
+            region_code: string,
+        },
+        street: {
+            name: string,
+        },
+    }
+    full_address?: string,
 }

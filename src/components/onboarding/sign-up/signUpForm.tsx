@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/passwordInput";
-import { submitCredentials } from "@/lib/actions/credentials";
+import { submitCredentials } from "@/lib/actions/registration";
 import { type CredentialsActionResponse } from "@/types/onboarding";
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";

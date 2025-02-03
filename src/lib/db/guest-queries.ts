@@ -1,3 +1,6 @@
+import { Guest } from '@/types/onboarding';
+import { redirect } from 'next/navigation';
+import { HttpTypes } from '@medusajs/types'
 import 'server-only'
 
 type GuestSessionOutput = {
@@ -14,6 +17,24 @@ type CartResponse = {
     }
 }
 
+export async function getGuest(token: string): Promise<Guest> {
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+        },
+    })
+    if (!result.ok) {
+        redirect('/pricing')
+    }
+    const { guest } = await result.json();
+    return {
+        email: guest.email,
+        phone_number: guest.phone_number,
+    };
+}
+
 export async function createGuest(): Promise<GuestSessionOutput> {
     const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
         method: "GET",
@@ -25,7 +46,7 @@ export async function createGuest(): Promise<GuestSessionOutput> {
     return { guest_token: token, cart_id };
 }
 
-export async function getGuest({
+export async function validateGuest({
     guestToken,
     cartId
 }: {
@@ -55,11 +76,25 @@ export async function getGuestSession({
     cartId: string | undefined
 }): Promise<GuestSessionOutput> {
     if (guestToken && cartId) {
-        return await getGuest({ guestToken, cartId });
+        return await validateGuest({ guestToken, cartId });
     }
     else {
         return await createGuest();
     }
+}
+
+export async function getCart(cartId: string): Promise<HttpTypes.StoreCart> {
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cartId}`, {
+        method: "GET",
+        headers: {
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+        },
+    })
+    if (!result.ok) {
+        redirect('/pricing')
+    }
+    const { cart } = await result.json();
+    return cart;
 }
 
 export async function addPlanToCart({
