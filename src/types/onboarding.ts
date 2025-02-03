@@ -34,6 +34,27 @@ export type OTPActionResponse = {
     error?: string;
 }
 
+export type AddressFormData = {
+    name: string;
+    lastname: string;
+    address_line1: string;
+    address_line2: string;
+    address_line3: string;
+    postal_code: string;
+    city: string;
+    district: string;
+    country: string;
+    neighborhood: string;
+    region: string;
+}
+
+export type AddressFormResponse = {
+    errors?: {
+        [K in keyof AddressFormData]?: string[];
+    };
+    inputs?: Partial<AddressFormData>;
+}
+
 export enum OnboardingStage {
     INITIAL = "initial",
     CREDENTIALS = "credentials",

@@ -24,7 +24,7 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "@/components/ui/input-otp"
-import { resendOTP, submitOtp } from "@/lib/actions/credentials"
+import { resendOTP, submitOtp } from "@/lib/actions/registration"
 import { useMediaQuery } from "usehooks-ts"
 import { Loader2 } from "lucide-react"
 

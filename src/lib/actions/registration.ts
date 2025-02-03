@@ -1,31 +1,14 @@
 'use server'
 
 import { z } from "zod";
-import { CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
+import { AddressFormData, AddressFormResponse, CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
 import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { addCredentials, requestOTPMessage, verifyOTP } from "../db/guest-account";
 import { setGuestCookies } from "./guest";
 import { createGuest } from "../db/guest-queries";
-
-const credentialsSchema = z.object({
-    email: z.string()
-        .trim()
-        .toLowerCase()
-        .email(),
-
-    phoneNumber: z.string()
-        .trim()
-        .min(10, "Phone number must be 10 digits")
-        .max(10, "Phone number must be 10 digits")
-        .refine((val) => /^\d+$/.test(val), "Phone number can only contain numbers"),
-
-    password: z.string()
-        .trim()
-        .min(8, "Password must be at least 8 characters")
-        .max(20, "Password must be at most 20 characters"),
-})
+import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
 
 export async function submitCredentials(
     prevState: CredentialsActionResponse | null,
@@ -109,7 +92,7 @@ export async function submitCredentials(
 
                 case "OTHER":
                     response.errors = { other: RegistrationError.SERVER_ERROR };
-                    
+
                 default:
                     response.errors = { other: RegistrationError.SERVER_ERROR };
             }
@@ -143,13 +126,6 @@ export async function submitCredentials(
     }
 }
 
-const otpSchema = z.object({
-    otp: z.string()
-        .trim()
-        .min(4, "pin must be 4 digits")
-        .max(4, "pin must be 4 digits")
-        .refine((val) => /^\d+$/.test(val), "PIN can only contain numbers"),
-})
 export async function submitOtp(
     input: string
 ): Promise<OTPActionResponse> {
@@ -197,7 +173,6 @@ export async function submitOtp(
     }
 }
 
-
 export async function resendOTP() {
     const cookieStore = await cookies()
     const guestToken = cookieStore.get("guest_session")?.value;
@@ -211,4 +186,70 @@ export async function resendOTP() {
 
     await requestOTPMessage(guestToken)
     return
+}
+
+export async function submitAddressForm(
+    prevState: AddressFormResponse | null,
+    formData: FormData
+): Promise<AddressFormResponse> {
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
+    
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
+    
+    const rawData: AddressFormData = {
+        name: formData.get("name") as string,
+        lastname: formData.get("lastname") as string,
+        address_line1: formData.get("address_line1") as string,
+        address_line2: formData.get("address_line2") as string,
+        address_line3: formData.get("address_line3") as string,
+        postal_code: formData.get("postal_code") as string,
+        city: formData.get("city") as string,
+        district: formData.get("district") as string,
+        country: formData.get("country") as string,
+        neighborhood: formData.get("neighborhood") as string,
+        region: formData.get("region") as string,
+    }
+    const response: AddressFormResponse = {
+        inputs: rawData
+    }
+    
+    const validatedData = addressFormSchema.safeParse(rawData);
+    console.log("validatedData", validatedData.data)
+    console.log(validatedData.error?.flatten().fieldErrors)
+    if (!validatedData.success) {
+        response.errors = validatedData.error.flatten().fieldErrors;
+        return response;
+    }
+
+    const geocodingResponse = await fetch(`${process.env.MAPBOX_GEOCODING_ENDPOINT}`
+        + "country=ca"
+        + `&address_line1=${validatedData.data.address_line1}`
+        + `&place=${validatedData.data.city}`
+        + `&region=${rawData.region}`
+        + `&postcode=${rawData.postal_code}`
+        + "&limit=1"
+        + '&types=address'
+        + `&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`)
+
+    const geocodingData = await geocodingResponse.json();
+
+    if (geocodingData.features.length === 0) {
+        response.errors = {
+            address_line1: ["Invalid address"]
+        }
+        return response;
+    }
+
+    const geocodingMatchCode = geocodingData.features[0].properties.match_code;
+    if (geocodingMatchCode.confidence !== "exact") {
+        response.errors = {
+            address_line1: ["Invalid address"]
+        }
+        return response;
+    }
+
+    redirect("/checkout/payment")
 }

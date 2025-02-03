@@ -5,10 +5,24 @@ import clsx from "clsx"
 import { useRef, useState } from "react";
 
 
-export default function AddressAutoFill() {
+export default function AddressAutoFill({
+    addressError,
+    cityError,
+    postCodeError,
+    guestToken
+}: {
+    addressError?: string[],
+    cityError?: string[],
+    postCodeError?: string[],
+    guestToken: string
+}) {
     const [inputValue, setInputValue] = useState('');
     const [postCode, setPostCode] = useState('');
     const [city, setCity] = useState('');
+    const [district, setDistrict] = useState('');
+    const [country, setCountry] = useState('');
+    const [neighborhood, setNeighborhood] = useState('');
+    const [region, setRegion] = useState('');
     const [suggestions, setSuggestions] = useState<AddressAutocomplete[]>([]);
     const [activeIndex, setActiveIndex] = useState(-1);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -17,6 +31,10 @@ export default function AddressAutoFill() {
         setInputValue(suggestion.context.address.name);
         setPostCode(suggestion.context.postcode.name);
         setCity(suggestion.context.place.name);
+        setDistrict(suggestion.context.district?.name ?? '');
+        setCountry(suggestion.context.country.name);
+        setNeighborhood(suggestion.context.neighborhood?.name ?? '');
+        setRegion(suggestion.context.region.name);
         setSuggestions([]);
         setActiveIndex(-1);
         inputRef.current?.focus();
@@ -32,9 +50,11 @@ export default function AddressAutoFill() {
             case 'ArrowUp':
                 e.preventDefault();
                 setActiveIndex(prev => prev > 0 ? prev - 1 : prev);
-                console.log(activeIndex);
                 break;
             case 'Enter':
+                if (suggestions.length !== 0) {
+                    e.preventDefault();
+                }
                 if (activeIndex >= 0) {
                     handleSelect(suggestions[activeIndex]);
                 }
@@ -55,7 +75,7 @@ export default function AddressAutoFill() {
             + "&proximity=-79.415612,43.779747"
             + "&types=address"
             + "&limit=3"
-            + "&session_token=123456"
+            + `&session_token=${guestToken}`
             + "&country=CA"
             + `&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`);
         const data: {
@@ -80,19 +100,18 @@ export default function AddressAutoFill() {
             >
                 <label
                     id="address-label"
-                    htmlFor="address_line_1"
+                    htmlFor="address_line1"
                     className="text-muted-foreground text-sm font-semibold"
-                >
-                    STREET ADDRESS
-                </label>
+                >STREET ADDRESS</label>
 
                 <input
                     ref={inputRef}
                     value={inputValue}
-                    name="address_line_1"
-                    id="address_line_1"
+                    name="address_line1"
+                    id="address_line1"
                     type="text"
                     required
+                    minLength={5}
                     autoComplete="new-password"
                     aria-label="Search for an address"
                     aria-autocomplete="list"
@@ -105,6 +124,8 @@ export default function AddressAutoFill() {
                     }}
                     className="w-full rounded-md border-2 border-gray-300 p-2 focus:border-blue-500"
                 />
+
+                {addressError && <p className="text-red-500 text-sm">{addressError[0]}</p>}
 
                 {/* Aria live region for screen readers */}
                 <div
@@ -150,30 +171,69 @@ export default function AddressAutoFill() {
                     </ul>
                 )}
             </div>
+            <input
+                name="district"
+                id="district"
+                type="text"
+                hidden
+                value={district}
+                readOnly
+            />
+            <input
+                name="country"
+                id="country"
+                type="text"
+                hidden
+                value={country}
+                readOnly
+            />
+
+            <input
+                name="neighborhood"
+                id="neighborhood"
+                type="text"
+                hidden
+                value={neighborhood}
+                readOnly
+            />
+            <input
+                name="region"
+                id="region"
+                type="text"
+                hidden
+                value={region}
+                readOnly
+            />
+
             <div className="w-full flex gap-x-2 text-muted-foreground">
                 <div className="w-full">
                     <label htmlFor="postal_code" className="text-sm font-semibold">POSTAL CODE</label>
                     <input
                         value={postCode}
-                        disabled
+                        readOnly
                         name="postal_code"
                         id="postal_code"
                         type="text"
                         required
-                        className="w-full rounded-md border-2 border-gray-300 p-2 "
-                        />
+                        tabIndex={-1}
+                        className="w-full rounded-md border-2 border-gray-300 p-2"
+                    />
+                    {postCodeError && <p className="text-red-500 text-sm">{postCodeError[0]}</p>}
                 </div>
                 <div className="w-full">
                     <label htmlFor="city" className="text-sm font-semibold">CITY</label>
                     <input
-                        disabled
                         value={city}
                         name="city"
                         id="city"
                         type="text"
                         required
+                        readOnly
+                        tabIndex={-1}
                         className="w-full rounded-md border-2 border-gray-300 p-2"
-                        />
+                    />
+                    {cityError && <p className="text-red-500 text-sm">{cityError[0]}</p>}
+
                 </div>
             </div>
         </>
