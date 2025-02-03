@@ -11,7 +11,8 @@ export async function AccountInfo({
     const parsedPhoneNumber = phoneNumberUtil.parse(guest.phone_number, "CA");
     const phone_number = phoneNumberUtil.format(parsedPhoneNumber, PhoneNumberFormat.NATIONAL);
     return (
-        <section className="w-full h-fit rounded-md border-2 border-blue-100 bg-white py-10 px-8">
+        <section className="w-full px-4 py-10 h-fit rounded-md border-2 border-blue-100 bg-white space-y-2
+        sm:px-8">
             <h2 className="text-2xl font-bold">Account Information</h2>
             <div className="flex justify-between w-full">
                 <ul>

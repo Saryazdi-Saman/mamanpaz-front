@@ -61,3 +61,38 @@ export type DeliverySchedule = {
         id: string,
     }
 }
+
+export type AddressAutocomplete = {
+    name: string,
+    context: {
+        address: {
+            address_number: string,
+            name: string,
+            street_name: string,
+        },
+        country: {
+            country_code: string,
+            name: string,
+        },
+        district?: {
+            name: string,
+        },
+        neighborhood?: {
+            name: string,
+        },
+        place: {
+            name: string,
+        },
+        postcode: {
+            name: string,
+        },
+        region: {
+            name: string,
+            region_code: string,
+        },
+        street: {
+            name: string,
+        },
+    }
+    full_address?: string,
+}

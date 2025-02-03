@@ -27,6 +27,7 @@
     "@vercel/otel": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "1.0.0",
     "framer-motion": "12.0.0-alpha.1",
     "google-libphonenumber": "^3.2.40",
     "input-otp": "^1.4.2",

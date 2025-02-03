@@ -14,8 +14,8 @@ export default async function OrderSummary({
     }
     const cart = await cartPromise;
     return (
-        <section className="w-full rounded-md border-2 border-teal-500 shadow-inner text-blue-500 bg-white py-10 px-8
-                            sm:max-w-md">
+        <section className="w-full px-4 py-10 space-y-2 rounded-md border-2 border-teal-500 shadow-inner text-blue-500 bg-white 
+        sm:px-8 sm:max-w-md">
             <h2 className="text-2xl font-bold">Order Summary</h2>
             <p>FIRST DELIVERY DATE</p>
             <div className="flex justify-between w-full">

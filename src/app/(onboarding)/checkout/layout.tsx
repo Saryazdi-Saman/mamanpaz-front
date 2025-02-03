@@ -20,7 +20,7 @@ export default async function CheckoutLayout({
     const guest = getGuest(guestToken);
     
     return (
-        <div className="min-h-screen md:px-4 py-16 lg:py-18 lg:px-16 w-full bg-teal-50 flex flex-col items-center gap-4 sm:gap-16 sm:flex-row-reverse sm:items-start">
+        <div className="min-h-screen px-2 md:px-4 py-8 md:py-16 lg:py-18 lg:px-16 w-full bg-teal-50 flex flex-col items-center gap-4 sm:gap-16 sm:flex-row-reverse sm:items-start">
             <ScrollToTop />
             <OrderSummary cartPromise={cart} />
             <div className="flex flex-col gap-y-4 w-full">
