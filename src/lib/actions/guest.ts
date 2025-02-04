@@ -1,9 +1,11 @@
 'use server'
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { addPlanToCart, createGuest } from "../db/guest-queries";
 import { redirect } from "next/navigation";
 import { AddToCartInput, OnboardingStage } from "@/types/onboarding";
+import { UTM } from "@/types/types";
+import { submitGuestVisit } from "../db/utm";
 
 export async function setGuestCookies({
     guest_token,
@@ -54,10 +56,8 @@ type AddToCartState = {
 
 export async function addToCart(
     prevState: AddToCartState | null,
-    {meal_plan_variant, delivery_schedule_variant}: AddToCartInput
+    { meal_plan_variant, delivery_schedule_variant }: AddToCartInput
 ) {
-    console.log("meal_variant", meal_plan_variant);
-    console.log("delivery_variant", delivery_schedule_variant);
     const cookieStore = await cookies();
     let guestToken = cookieStore.get('guest_session')?.value;
     let cartId = cookieStore.get('cart_id')?.value;
@@ -76,7 +76,7 @@ export async function addToCart(
         });
         if (error) {
             return {
-                error: {message: "Something went wrong"}
+                error: { message: "Something went wrong" }
             }
         }
 
@@ -89,8 +89,30 @@ export async function addToCart(
 
     } catch {
         return {
-            error: {message: "Something went wrong"}
+            error: { message: "Something went wrong" }
         }
     }
     redirect("/sign-up")
+}
+
+export async function submitUTM(utm: UTM) {
+    const headerList = await headers()
+    const cookieStore = await cookies();
+    const userAgent = headerList.get('user-agent') as string;
+    const referer = headerList.get('referer') as string;
+    const origin = headerList.get('origin') as string;
+    const xForwardedFor = headerList.get('x-forwarded-for') as string;
+    const reqHeaders = {
+        user_agent: userAgent,
+        referer: referer,
+        origin: origin,
+        ip_address: xForwardedFor
+    };
+    let guestToken = cookieStore.get('guest_session')?.value;
+    if (!guestToken) {
+        console.error("Could not submit UTM data, guest token is not set")
+        return
+    }
+    await submitGuestVisit({utm, headerObject:reqHeaders, guestToken});
+    return
 }
