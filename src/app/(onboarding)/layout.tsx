@@ -17,10 +17,10 @@ export default async function MarketingLayout({ children }: { children: React.Re
     return (
         <section className="flex flex-col min-h-screen">
             <Navbar />
+            {children}
             <Suspense >
                 <CookieInitializer sessionPromise={session} />
             </Suspense>
-            {children}
             <Footer />
         </section>
     );
