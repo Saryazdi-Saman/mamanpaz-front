@@ -1,7 +1,7 @@
 import { ProductProvider } from "@/components/onboarding/pricing/product-context"
 import { ProductDescription } from "@/components/onboarding/pricing/product-description"
 import { getAvailablePlans, getPlanVariants } from "@/lib/db/store-queries"
-import { notFound, redirect, RedirectType } from "next/navigation"
+import { redirect, RedirectType } from "next/navigation"
 
 export async function generateStaticParams() {
     const plans = await getAvailablePlans()

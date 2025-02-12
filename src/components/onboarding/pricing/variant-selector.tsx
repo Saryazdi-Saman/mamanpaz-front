@@ -68,9 +68,6 @@ export function VariantSelector({
               <button
                 formAction={() => {
                   const newState = updateOption(optionNameLowerCase, value.value);
-                  // if (selectedVariant){
-                  //   updatePrice(selectedVariant.calculated_price.calculated_amount?.toString() ?? "0")
-                  // }
                   updateURL(newState);
                 }}
                 key={value.value}

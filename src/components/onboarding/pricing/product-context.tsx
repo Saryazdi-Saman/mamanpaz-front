@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductWithPricing } from '@/types/types';
+import { ProductWithPricing, VariantsWithPrice } from '@/types/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
 
@@ -18,20 +18,37 @@ export function ProductProvider({
     children,
     product
 }: {
-    children: React.ReactNode
+    children: React.ReactNode,
     product: ProductWithPricing
 }) {
     const searchParams = useSearchParams();
 
     const getInitialState = () => {
-        const params: ProductState = {};
+        const defaultVariant = product.variants
+            .reduce((lowest, current) => {
+                if (!lowest
+                    || !current.calculated_price.calculated_amount
+                    || !lowest.calculated_price.calculated_amount) return current
+                return current.calculated_price.calculated_amount < lowest.calculated_price.calculated_amount
+                    ? current
+                    : lowest
+            }, undefined as VariantsWithPrice | undefined);
+    
+        const defaultParams = defaultVariant?.options.reduce((acc, opt) => {
+            if (!opt.option) return acc
+            return {
+                ...acc,
+                [opt.option.title.toLowerCase()]: opt.value
+            }
+        }, {}) ?? {}
+
+        const params: ProductState = {...defaultParams};
         for (const [key, value] of searchParams.entries()) {
             params[key] = value;
         }
         return params;
     };
 
-    
     const [state, setOptimisticState] = useOptimistic(
         getInitialState(),
         (prevState: ProductState, update: ProductState) => ({
@@ -39,7 +56,7 @@ export function ProductProvider({
             ...update
         })
     );
-    
+
     const updateOption = (name: string, value: string) => {
         const newState = { [name]: value };
         setOptimisticState(newState);
@@ -75,6 +92,6 @@ export function useUpdateURL() {
                 newParams.set(key, value)
             )
         });
-        router.replace(`?${newParams.toString()}`, { scroll: false});
+        router.replace(`?${newParams.toString()}`, { scroll: false });
     };
 }
