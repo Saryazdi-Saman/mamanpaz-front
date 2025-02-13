@@ -86,10 +86,10 @@ export type UTM = {
 }
 
 
-export type VariantsWithPrice = ProductVariantDTO & {
+export type VariantWithPrice = ProductVariantDTO & {
     calculated_price: CalculatedPriceSet
 }
 
 export type ProductWithPricing = Omit<ProductDTO, 'variants'> & {
-    variants: VariantsWithPrice[]
+    variants: VariantWithPrice[]
 }

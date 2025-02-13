@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductWithPricing, VariantsWithPrice } from '@/types/types';
+import { ProductWithPricing, VariantWithPrice } from '@/types/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
 
@@ -10,6 +10,7 @@ type ProductState = {
 type ProductContextType = {
     state: ProductState;
     updateOption: (name: string, value: string) => ProductState;
+    selectedPlan: VariantWithPrice | undefined
 };
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -32,7 +33,7 @@ export function ProductProvider({
                 return current.calculated_price.calculated_amount < lowest.calculated_price.calculated_amount
                     ? current
                     : lowest
-            }, undefined as VariantsWithPrice | undefined);
+            }, undefined as VariantWithPrice | undefined);
     
         const defaultParams = defaultVariant?.options.reduce((acc, opt) => {
             if (!opt.option) return acc
@@ -57,6 +58,14 @@ export function ProductProvider({
         })
     );
 
+    const selectedPlan = useMemo(()=> {
+        return product.variants.find(variant => 
+            variant.options.every(opt => 
+                opt.option && state[opt.option.title.toLowerCase()] === opt.value
+            )
+        );
+    }, [product.variants, state]);
+
     const updateOption = (name: string, value: string) => {
         const newState = { [name]: value };
         setOptimisticState(newState);
@@ -67,6 +76,7 @@ export function ProductProvider({
         () => ({
             state,
             updateOption,
+            selectedPlan,
         }),
         [state]
     );
