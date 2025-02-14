@@ -1,6 +1,6 @@
-import {  ProductWithPricing } from "@/types/types";
+import { ProductWithPricing } from "@/types/types";
 import { HttpTypes, ProductDTO, ProductOptionDTO, ProductVariantDTO } from "@medusajs/types";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 type PlanData = {
     title: string,
     handle: string,
@@ -8,6 +8,62 @@ type PlanData = {
     variants: ProductVariantDTO[],
     options: ProductOptionDTO[]
 }
+
+interface FetchError extends Error {
+    status?: number;
+    response?: Response;
+}
+
+type ExtractVariables<T> = T extends { variables: object }
+    ? T['variables']
+    : never;
+
+export async function storeFetch<T>({
+    customHeaders,
+    query,
+    body,
+    method = "GET",
+}: {
+    customHeaders?: HeadersInit;
+    query: string;
+    body?: Record<string, any>;
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+}): Promise<{ status: number; body: T } | never> {
+    const reqHeaders = await headers()
+    try {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store${query}`, {
+            method,
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+                "Authorization": reqHeaders.get('Authorization') || "",
+                "Cookies": reqHeaders.get("Cookie") || "",
+                ...customHeaders,
+            },
+            ...(method !== "GET" && body
+                ? { body: JSON.stringify(body) }
+                : {})
+        });
+
+        if (!result.ok) {
+            const error = new Error("API request failed") as FetchError;
+            error.status = result.status;
+            error.response = result;
+            throw error;
+        }
+
+        const data = await result.json();
+        return { status: result.status, body: data as T };
+
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`API Error: ${query} ${error.message}`);
+        }
+        throw new Error('Unknown API Error');
+    }
+}
+
 export async function getAvailablePlans(): Promise<PlanData[]> {
     const categorySearchParams = new URLSearchParams({
         q: "Plans",
@@ -65,7 +121,7 @@ export async function getPlanVariants(
                 tags: ['available_plans']
             }
         })
-    const {products} = await productsResponse.json()
+    const { products } = await productsResponse.json()
     if (!products || products.length === 0) {
         return undefined
     }
@@ -109,19 +165,23 @@ export async function getPlanVariants(
 
 export async function getCart(): Promise<HttpTypes.StoreCart | undefined> {
     const cartId = (await cookies()).get('cartId')?.value;
-    
     if (!cartId) {
         return undefined
     }
-
-    const res = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cartId}`,{
-        credentials: "include",
-        headers: {
-            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-        },
-    })
-    if (!res.ok) {
+    try {
+        const { body } = await storeFetch<{ cart: HttpTypes.StoreCart }>({
+            query: `/store/carts/${cartId}`
+        })
+        return body.cart
+    } catch {
         return undefined
     }
-    const { cart }:{ cart: HttpTypes.StoreCart | undefined} = await res.json()
+}
+
+export async function createCart(): Promise<HttpTypes.StoreCart> {
+    const { body } = await storeFetch<{ cart: HttpTypes.StoreCart }>({
+        query: '/store/carts',
+        method: 'POST',
+    })
+    return body.cart
 }
