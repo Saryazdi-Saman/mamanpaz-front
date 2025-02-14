@@ -2,8 +2,8 @@
 
 import clsx from 'clsx';
 import { useProduct, useUpdateURL } from './product-context';
-import { ProductOptionDTO, ProductVariantDTO } from '@medusajs/types';
-import { VariantsWithPrice } from '@/types/types';
+import { ProductOptionDTO } from '@medusajs/types';
+import { VariantWithPrice } from '@/types/types';
 
 type Combination = {
   id: string;
@@ -17,7 +17,7 @@ export function VariantSelector({
   variants
 }: {
   options: ProductOptionDTO[];
-  variants: VariantsWithPrice[];
+  variants: VariantWithPrice[];
 }) {
   const { state, updateOption } = useProduct();
   const updateURL = useUpdateURL();

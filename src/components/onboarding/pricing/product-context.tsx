@@ -4,13 +4,33 @@ import { ProductWithPricing, VariantWithPrice } from '@/types/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
 
+type DeliverySchedule = {
+    title: string;
+    day1: number;
+    day2: number;
+    day3: number;
+    day4: number;
+    day5: number;
+    day6: number;
+    day7: number;
+};
+
+type DayDelivery = {
+    date: Date;
+    dayOfWeek: string;
+    meals: number;
+    formattedDate: string;
+}
+
 type ProductState = {
     [key: string]: string;
-}
+};
+
 type ProductContextType = {
     state: ProductState;
     updateOption: (name: string, value: string) => ProductState;
     selectedPlan: VariantWithPrice | undefined
+    deliveryDays: DayDelivery[] | undefined
 };
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -34,7 +54,7 @@ export function ProductProvider({
                     ? current
                     : lowest
             }, undefined as VariantWithPrice | undefined);
-    
+
         const defaultParams = defaultVariant?.options.reduce((acc, opt) => {
             if (!opt.option) return acc
             return {
@@ -43,7 +63,7 @@ export function ProductProvider({
             }
         }, {}) ?? {}
 
-        const params: ProductState = {...defaultParams};
+        const params: ProductState = { ...defaultParams };
         for (const [key, value] of searchParams.entries()) {
             params[key] = value;
         }
@@ -58,13 +78,45 @@ export function ProductProvider({
         })
     );
 
-    const selectedPlan = useMemo(()=> {
-        return product.variants.find(variant => 
-            variant.options.every(opt => 
+    const selectedPlan = useMemo(() => {
+        return product.variants.find(variant =>
+            variant.options.every(opt =>
                 opt.option && state[opt.option.title.toLowerCase()] === opt.value
             )
         );
     }, [product.variants, state]);
+
+    const deliveryDays = useMemo(() => {
+        if (!selectedPlan?.metadata?.delivery_schedule) return undefined
+
+        const deliverySchedule = selectedPlan.metadata.delivery_schedule as DeliverySchedule
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() + 1);
+
+        const daysOfWeek = [
+            'Sundays', 'Mondays', 'Tuesdays', 'Wednesdays',
+            'Thursdays', 'Fridays', 'Saturdays'
+        ];
+
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+
+        return Array.from({ length: 7 }, (_, i) => {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+
+            const meals = (deliverySchedule[`day${i + 1}` as keyof DeliverySchedule] as number) * (selectedPlan.metadata?.meals_per_day as number)
+            return {
+                date: currentDate,
+                dayOfWeek: daysOfWeek[currentDate.getDay()],
+                meals,
+                formattedDate: formatter.format(currentDate)
+            };
+
+        }).filter(day => day.meals)
+    }, [selectedPlan])
 
     const updateOption = (name: string, value: string) => {
         const newState = { [name]: value };
@@ -77,6 +129,7 @@ export function ProductProvider({
             state,
             updateOption,
             selectedPlan,
+            deliveryDays
         }),
         [state]
     );

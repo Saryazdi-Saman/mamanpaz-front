@@ -1,3 +1,4 @@
+import DeliverySchedule from "@/components/onboarding/pricing/delivery-schedule"
 import { ProductProvider } from "@/components/onboarding/pricing/product-context"
 import { ProductDescription } from "@/components/onboarding/pricing/product-description"
 import { getAvailablePlans, getPlanVariants } from "@/lib/db/store-queries"
@@ -26,8 +27,9 @@ export default async function PlanPage({
 
     return (
         <ProductProvider product={product}>
-            <div className="w-full min-h-screen flex items-center justify-center">
+            <div className="w-full min-h-screen flex items-center justify-center gap-20">
                 <ProductDescription product={product} />
+                <DeliverySchedule />
             </div>
         </ProductProvider>
     )
