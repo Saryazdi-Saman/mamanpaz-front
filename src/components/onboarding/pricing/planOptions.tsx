@@ -1,33 +1,26 @@
 import { PlanSelector } from "./planSelector";
 import { Plan } from "@/types/types";
 import { PlanSummary } from "./planSummary";
+import { ProductOptionDTO, ProductVariantDTO } from "@medusajs/types";
 
 export default async function PlanOptions({
-    plans,
-    selectedPlan,
-    selectesDelivery
+    variants,
+    options,
 }: {
-    plans: Plan[]
-    selectedPlan: {
-        slug: string | string[]
-        id: string
-    }
-    selectesDelivery: {
-        slug: string | string[]
-        id: string
-    }
+    variants: ProductVariantDTO[],
+    options: ProductOptionDTO[],
 }) {
     return (
         <section className="bg-background py-10 sm:px-14 grow select-none">
-            <h3 className="text-xl md:text-2xl font-bold select-none py-4">2. Select number of meals</h3>
+            <h3 className="text-xl md:text-2xl font-bold select-none py-4">2. Customize your plan:</h3>
             <div className="flex gap-6">
                 <div
                     className="grid grid-cols-2 gap-1 w-fit">
-                    {plans.map((plan) => (
+                    {/* {plans.map((plan) => (
                         <PlanSelector key={plan.id} plan={plan} selectedPlan={selectedPlan} selectedDelivery={selectesDelivery} />
-                    ))}
+                    ))} */}
                 </div>
-                <PlanSummary plan={plans.find((plan) => plan.slug === selectedPlan.slug) ?? plans[0]} />
+                {/* <PlanSummary plan={plans.find((plan) => plan.slug === selectedPlan.slug) ?? plans[0]} /> */}
             </div>
         </section>
     )

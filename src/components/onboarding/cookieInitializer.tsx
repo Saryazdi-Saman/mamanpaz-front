@@ -52,7 +52,7 @@ export function CookieInitializer({ sessionPromise }: { sessionPromise: Promise<
             setCommited(true);
             submitUTM(utm);
         }
-        if (promocode.length !== 0 && promocode !== prevPromoCode) {
+        if (promocode && promocode.length !== 0 && promocode !== prevPromoCode) {
             setPrevPromoCode(promocode);
             // TO DO: call a server action to track promocode
         }

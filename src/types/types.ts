@@ -1,3 +1,5 @@
+import { CalculatedPriceSet, ProductDTO, ProductVariantDTO } from "@medusajs/types"
+
 export interface TMenu {
     meals: TMeal[],
 }
@@ -23,22 +25,22 @@ export type Plan = {
     }
 }
 
-export type DeliverySchedule = {
-    id: string,
-    name: string,
-    slug: string,
-    monday: number,
-    tuesday: number,
-    wednesday: number,
-    thursday: number,
-    friday: number,
-    saturday: number,
-    sunday: number,
-    price: number,
-    product_variant: {
-        id: string,
-    }
-}
+// export type DeliverySchedule = {
+//     id: string,
+//     name: string,
+//     slug: string,
+//     monday: number,
+//     tuesday: number,
+//     wednesday: number,
+//     thursday: number,
+//     friday: number,
+//     saturday: number,
+//     sunday: number,
+//     price: number,
+//     product_variant: {
+//         id: string,
+//     }
+// }
 
 export type AddressAutocomplete = {
     name: string,
@@ -81,4 +83,13 @@ export type UTM = {
     utm_campaign?: string,
     utm_content?: string,
     utm_term?: string
+}
+
+
+export type VariantWithPrice = ProductVariantDTO & {
+    calculated_price: CalculatedPriceSet
+}
+
+export type ProductWithPricing = Omit<ProductDTO, 'variants'> & {
+    variants: VariantWithPrice[]
 }
