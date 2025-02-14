@@ -1,3 +1,4 @@
+import { TAGS } from "@/types/constants";
 import { ProductWithPricing } from "@/types/types";
 import { HttpTypes, ProductDTO, ProductOptionDTO, ProductVariantDTO } from "@medusajs/types";
 import { cookies, headers } from "next/headers";
@@ -23,11 +24,15 @@ export async function storeFetch<T>({
     query,
     body,
     method = "GET",
+    tags,
+    cache,
 }: {
     customHeaders?: HeadersInit;
     query: string;
     body?: Record<string, any>;
     method?: "GET" | "POST" | "PUT" | "DELETE";
+    tags: string[],
+    cache: "force-cache" | "no-store"
 }): Promise<{ status: number; body: T } | never> {
     const reqHeaders = await headers()
     try {
@@ -43,8 +48,12 @@ export async function storeFetch<T>({
             },
             ...(method !== "GET" && body
                 ? { body: JSON.stringify(body) }
-                : {})
-        });
+                : {}),
+            next: {
+                tags: tags
+            },
+            cache,
+        })
 
         if (!result.ok) {
             const error = new Error("API request failed") as FetchError;
@@ -165,12 +174,14 @@ export async function getPlanVariants(
 
 export async function getCart(): Promise<HttpTypes.StoreCart | undefined> {
     const cartId = (await cookies()).get('cartId')?.value;
+
     if (!cartId) {
         return undefined
     }
     try {
         const { body } = await storeFetch<{ cart: HttpTypes.StoreCart }>({
-            query: `/store/carts/${cartId}`
+            query: `/store/carts/${cartId}`,
+            tags: [TAGS.cart]
         })
         return body.cart
     } catch {
@@ -182,6 +193,7 @@ export async function createCart(): Promise<HttpTypes.StoreCart> {
     const { body } = await storeFetch<{ cart: HttpTypes.StoreCart }>({
         query: '/store/carts',
         method: 'POST',
+        tags: [],
     })
     return body.cart
 }
