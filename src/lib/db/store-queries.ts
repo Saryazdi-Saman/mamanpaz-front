@@ -1,5 +1,6 @@
-import { DeliverySchedule, Plan, ProductWithPricing } from "@/types/types";
-import { CalculatedPriceSet, CalculatedPriceSetDTO, PriceDTO, ProductDTO, ProductOptionDTO, ProductVariantDTO } from "@medusajs/types";
+import {  ProductWithPricing } from "@/types/types";
+import { HttpTypes, ProductDTO, ProductOptionDTO, ProductVariantDTO } from "@medusajs/types";
+import { cookies } from "next/headers";
 type PlanData = {
     title: string,
     handle: string,
@@ -92,16 +93,35 @@ export async function getPlanVariants(
     return product
 }
 
-export async function getAvailableDeliveryOptions(): Promise<DeliverySchedule[]> {
-    const { delivery_options } = await fetch(`${ process.env.MEDUSA_BACKEND_URI } / store / delivery - options`, {
-        method: "GET",
+// export async function getAvailableDeliveryOptions(): Promise<DeliverySchedule[]> {
+//     const { delivery_options } = await fetch(`${ process.env.MEDUSA_BACKEND_URI } / store / delivery - options`, {
+//         method: "GET",
+//         credentials: "include",
+//         headers: {
+//             "x-publishable-api-key": `${ process.env.MEDUSA_PUBLIC_KEY }`,
+//         },
+//         next: {
+//             tags: ['delivery_options']
+//         }
+//     }).then((res) => res.json());
+//     return delivery_options;
+// }
+
+export async function getCart(): Promise<HttpTypes.StoreCart | undefined> {
+    const cartId = (await cookies()).get('cartId')?.value;
+    
+    if (!cartId) {
+        return undefined
+    }
+
+    const res = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cartId}`,{
         credentials: "include",
         headers: {
-            "x-publishable-api-key": `${ process.env.MEDUSA_PUBLIC_KEY }`,
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
         },
-        next: {
-            tags: ['delivery_options']
-        }
-    }).then((res) => res.json());
-    return delivery_options;
+    })
+    if (!res.ok) {
+        return undefined
+    }
+    const { cart }:{ cart: HttpTypes.StoreCart | undefined} = await res.json()
 }
