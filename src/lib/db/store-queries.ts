@@ -84,9 +84,7 @@ export async function getAvailablePlans(): Promise<PlanData[]> {
             headers: {
                 "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
             },
-            next: {
-                tags: ['available_plans']
-            }
+            cache: "force-cache"
         })
     const { product_categories } = await categoriesResponse.json()
 
@@ -100,8 +98,9 @@ export async function getAvailablePlans(): Promise<PlanData[]> {
             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
         },
         next: {
-            tags: ['availbale_plans']
-        }
+            tags: [TAGS.plan_categories]
+        },
+        cache: "force-cache"
     })
 
     const { products }: { products: ProductDTO[] } = await productsResponse.json()
@@ -127,8 +126,9 @@ export async function getPlanVariants(
                 "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
             },
             next: {
-                tags: ['available_plans']
-            }
+                tags: [TAGS.plans]
+            },
+            cache: "force-cache"
         })
     const { products } = await productsResponse.json()
     if (!products || products.length === 0) {
@@ -147,8 +147,9 @@ export async function getPlanVariants(
                 "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
             },
             next: {
-                tags: ['available_plans']
-            }
+                tags: [TAGS.plans]
+            },
+            cache: "force-cache"
         })
     const {
         product
@@ -181,7 +182,8 @@ export async function getCart(): Promise<HttpTypes.StoreCart | undefined> {
     try {
         const { body } = await storeFetch<{ cart: HttpTypes.StoreCart }>({
             query: `/store/carts/${cartId}`,
-            tags: [TAGS.cart]
+            tags: [TAGS.cart],
+            cache: "no-store"
         })
         return body.cart
     } catch {
@@ -194,6 +196,7 @@ export async function createCart(): Promise<HttpTypes.StoreCart> {
         query: '/store/carts',
         method: 'POST',
         tags: [],
+        cache: "no-store"
     })
     return body.cart
 }

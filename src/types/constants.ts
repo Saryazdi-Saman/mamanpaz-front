@@ -1,6 +1,6 @@
 export const TAGS = {
-    collections: 'collections',
-    products: 'products',
-    cart: 'cart'
+    cart: 'cart',
+    plans: 'plans',
+    plan_categories: "plan_categories"
   };
   
