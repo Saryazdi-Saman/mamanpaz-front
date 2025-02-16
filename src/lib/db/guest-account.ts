@@ -9,6 +9,12 @@ enum CredentialsError {
     OTHER = "OTHER",
 }
 
+enum AddressError {
+    GUEST_NOT_FOUND = "GUEST_NOT_FOUND",
+    PROGRESS_MISMATCH = "PROGRESS_MISMATCH",
+    OTHER = "OTHER",
+}
+
 type AddCredentialsInput = {
     token: string;
     phoneNumber: string;
@@ -29,7 +35,7 @@ type CredentialsRegisterationSuccess = {
 type CredentialsRegisterationStatus = CredentialsRegisterationError | CredentialsRegisterationSuccess;
 
 export async function addCredentials(input: AddCredentialsInput): Promise<CredentialsRegisterationStatus> {
-    const { success, error, next } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/credentials`, {
+    const { success, error, next } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/add-credentials`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -53,7 +59,7 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
 
 export async function requestOTPMessage(token: string): Promise<undefined> {
     try {
-        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}/otp`, {
+        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -82,7 +88,7 @@ export async function verifyOTP({
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}/otp`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -108,7 +114,7 @@ export async function verifyOTP({
 
 type CustomerInfoResponse = {
     success: boolean,
-    error?: "GUEST_NOT_FOUND" | "OTHER"
+    error?: AddressError
 }
 
 export async function addCustomerInfo({
@@ -142,7 +148,7 @@ export async function addCustomerInfo({
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${guestToken}/address`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestToken}/address`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -164,23 +170,17 @@ export async function addCustomerInfo({
             })
         })
         if (!result.ok) {
-            response.error = "OTHER"
+            response.error = AddressError.OTHER
             return response
         }
-        const data = await result.json();
-        if (data.error && data.error === "GUEST_NOT_FOUND") {
-            response.error = "GUEST_NOT_FOUND"
-            return response
-        }
-        if (data.error && data.error === "OTHER") {
-            response.error = "OTHER"
-            return response
-        }
+        const data: {
+            success: boolean;
+            error?: AddressError
+        }  = await result.json();
 
-        response.success = true
-        return response
+        return data
     } catch {
-        response.error = "OTHER"
+        response.error = AddressError.OTHER
         return response
     }
 

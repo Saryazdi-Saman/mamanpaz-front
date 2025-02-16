@@ -1,22 +1,11 @@
-// 'use server'
+'use server'
 
-import { CredentialsActionResponse, CredentialsFormData, OnboardingStage, RegistrationError } from "@/types/onboarding";
+import { AddressFormData, AddressFormResponse, CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { credentialsSchema } from "../validators";
+import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
 import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber";
-import { addCredentials } from "../db/guest-account";
-import { createGuest } from "../db/guest-queries";
-
-// import { z } from "zod";
-// import { AddressFormData, AddressFormResponse, CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
-// import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
-// import { cookies } from "next/headers";
-// import { redirect } from "next/navigation";
-// import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
-// import { setGuestCookies } from "./guest";
-// import { createGuest } from "../db/guest-queries";
-// import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
+import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
 
 export async function submitCredentials(
     prevState: CredentialsActionResponse | null,
@@ -91,7 +80,7 @@ export async function submitCredentials(
                     response.errors = { other: RegistrationError.GUEST_NOT_FOUND };
 
                 case "PROGRESS_MISMATCH":
-                    response.errors= { other: RegistrationError.STAGE_MISMATCH}
+                    response.errors = { other: RegistrationError.STAGE_MISMATCH }
 
                 case "OTHER":
                     response.errors = { other: RegistrationError.SERVER_ERROR };
@@ -117,173 +106,161 @@ export async function submitCredentials(
             redirect("/checkout/details")
         }
         if (response.errors) {
-            if(response.errors.other === RegistrationError.GUEST_NOT_FOUND) redirect("/pricing")
-            if(response.errors.other === RegistrationError.STAGE_MISMATCH) redirect("/pricing")
+            if (response.errors.other === RegistrationError.GUEST_NOT_FOUND) redirect("/pricing")
+            if (response.errors.other === RegistrationError.STAGE_MISMATCH) redirect("/pricing")
         }
 
         return response;
     }
 }
 
+export async function submitOtp(
+    input: string
+): Promise<OTPActionResponse> {
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
 
-// function setGuestCookies(arg0: { guest_token: any; cart_id: any; progress_step: any; }) {
-//     throw new Error("Function not implemented.");
-// }
-// export async function submitOtp(
-//     input: string
-// ): Promise<OTPActionResponse> {
-//     const cookieStore = await cookies()
-//     const guestToken = cookieStore.get("guest_session")?.value;
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
+    const rawData: { otp: string } = {
+        otp: input,
+    }
 
-//     if (!guestToken || guestToken === "") {
-//         redirect("/pricing")
-//     }
-//     const rawData: { otp: string } = {
-//         otp: input,
-//     }
+    //validate the data
+    const validatedData = otpSchema.safeParse(rawData);
+    if (!validatedData.success) {
+        return {
+            success: false,
+            error: "PIN must be 4 digits",
+        }
+    }
 
-//     //validate the data
-//     const validatedData = otpSchema.safeParse(rawData);
-//     if (!validatedData.success) {
-//         return {
-//             success: false,
-//             error: "PIN must be 4 digits",
-//         }
-//     }
+    const result = await verifyOTP({
+        token: guestToken,
+        otp: validatedData.data.otp
+    })
 
-//     const result = await verifyOTP({
-//         token: guestToken,
-//         otp: validatedData.data.otp
-//     })
+    if (!result.success) {
+        if (result.error) {
+            return {
+                success: false,
+                error: "Something went wrong, please try again.",
+            }
+        } else {
+            return {
+                success: false,
+                error: "Invalid PIN",
+            }
+        }
+    } else {
+        redirect("/checkout/details")
+    }
+}
 
-//     if (!result.success) {
-//         if (result.error) {
-//             return {
-//                 success: false,
-//                 error: "Something went wrong, please try again.",
-//             }
-//         } else {
-//             return {
-//                 success: false,
-//                 error: "Invalid PIN",
-//             }
-//         }
-//     } else {
-//         await setGuestCookies({
-//             progress_step: OnboardingStage.ADDRESS
-//         })
-//         redirect("/checkout/details")
-//     }
-// }
+export async function resendOTP() {
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
 
-// export async function resendOTP() {
-//     const cookieStore = await cookies()
-//     const guestToken = cookieStore.get("guest_session")?.value;
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
 
-//     console.log("actions/credentials.ts:resendOTP")
-//     console.log("guestToken", guestToken)
+    await requestOTPMessage(guestToken)
+    return
+}
 
-//     if (!guestToken || guestToken === "") {
-//         redirect("/pricing")
-//     }
+export async function submitAddressForm(
+    prevState: AddressFormResponse | null,
+    formData: FormData
+): Promise<AddressFormResponse> {
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
 
-//     await requestOTPMessage(guestToken)
-//     return
-// }
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
 
-// export async function submitAddressForm(
-//     prevState: AddressFormResponse | null,
-//     formData: FormData
-// ): Promise<AddressFormResponse> {
-//     const cookieStore = await cookies()
-//     const guestToken = cookieStore.get("guest_session")?.value;
+    const rawData: AddressFormData = {
+        name: formData.get("name") as string,
+        lastname: formData.get("lastname") as string,
+        address_line1: formData.get("address_line1") as string,
+        address_line2: formData.get("address_line2") as string,
+        address_line3: formData.get("address_line3") as string,
+        postal_code: formData.get("postal_code") as string,
+        city: formData.get("city") as string,
+        district: formData.get("district") as string,
+        country: formData.get("country") as string,
+        neighborhood: formData.get("neighborhood") as string,
+        region: formData.get("region") as string,
+    }
+    const response: AddressFormResponse = {
+        inputs: rawData
+    }
 
-//     if (!guestToken || guestToken === "") {
-//         redirect("/pricing")
-//     }
+    const validatedData = addressFormSchema.safeParse(rawData);
+    if (!validatedData.success) {
+        response.errors = validatedData.error.flatten().fieldErrors;
+        return response;
+    }
 
-//     const rawData: AddressFormData = {
-//         name: formData.get("name") as string,
-//         lastname: formData.get("lastname") as string,
-//         address_line1: formData.get("address_line1") as string,
-//         address_line2: formData.get("address_line2") as string,
-//         address_line3: formData.get("address_line3") as string,
-//         postal_code: formData.get("postal_code") as string,
-//         city: formData.get("city") as string,
-//         district: formData.get("district") as string,
-//         country: formData.get("country") as string,
-//         neighborhood: formData.get("neighborhood") as string,
-//         region: formData.get("region") as string,
-//     }
-//     const response: AddressFormResponse = {
-//         inputs: rawData
-//     }
+    const geocodingResponse = await fetch(`${process.env.MAPBOX_GEOCODING_ENDPOINT}`
+        + "country=ca"
+        + `&address_line1=${validatedData.data.address_line1}`
+        + `&place=${validatedData.data.city}`
+        + `&region=${rawData.region}`
+        + `&postcode=${rawData.postal_code}`
+        + "&limit=1"
+        + '&types=address'
+        + `&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`)
 
-//     const validatedData = addressFormSchema.safeParse(rawData);
-//     if (!validatedData.success) {
-//         response.errors = validatedData.error.flatten().fieldErrors;
-//         return response;
-//     }
+    const geocodingData = await geocodingResponse.json();
 
-//     const geocodingResponse = await fetch(`${process.env.MAPBOX_GEOCODING_ENDPOINT}`
-//         + "country=ca"
-//         + `&address_line1=${validatedData.data.address_line1}`
-//         + `&place=${validatedData.data.city}`
-//         + `&region=${rawData.region}`
-//         + `&postcode=${rawData.postal_code}`
-//         + "&limit=1"
-//         + '&types=address'
-//         + `&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`)
+    if (geocodingData.features.length === 0) {
+        response.errors = {
+            address_line1: ["Invalid address"]
+        }
+        return response;
+    }
 
-//     const geocodingData = await geocodingResponse.json();
+    const geocodingMatchCode = geocodingData.features[0].properties.match_code;
+    if (geocodingMatchCode.confidence !== "exact") {
+        response.errors = {
+            address_line1: ["Invalid address"]
+        }
+        return response;
+    }
 
-//     if (geocodingData.features.length === 0) {
-//         response.errors = {
-//             address_line1: ["Invalid address"]
-//         }
-//         return response;
-//     }
+    const dbQueryResult = await addCustomerInfo({
+        guestToken,
+        name: validatedData.data.name,
+        lastname: validatedData.data.lastname,
+        address_line1: validatedData.data.address_line1,
+        address_line2: rawData.address_line2,
+        address_line3: rawData.address_line3,
+        postal_code: validatedData.data.postal_code,
+        city: validatedData.data.city,
+        district: rawData.district,
+        country: rawData.country,
+        neighborhood: rawData.neighborhood,
+        region: rawData.region
+    })
 
-//     const geocodingMatchCode = geocodingData.features[0].properties.match_code;
-//     if (geocodingMatchCode.confidence !== "exact") {
-//         response.errors = {
-//             address_line1: ["Invalid address"]
-//         }
-//         return response;
-//     }
+    if (!dbQueryResult.success) {
+        switch (dbQueryResult.error) {
+            case "GUEST_NOT_FOUND":
+                redirect('/pricing')
 
-//     const dbQueryResult = await addCustomerInfo({
-//         guestToken,
-//         name: validatedData.data.name,
-//         lastname: validatedData.data.lastname,
-//         address_line1: validatedData.data.address_line1,
-//         address_line2: rawData.address_line2,
-//         address_line3: rawData.address_line3,
-//         postal_code: validatedData.data.postal_code,
-//         city: validatedData.data.city,
-//         district: rawData.district,
-//         country: rawData.country,
-//         neighborhood: rawData.neighborhood,
-//         region: rawData.region
-//     })
+            case "PROGRESS_MISMATCH":
+                redirect('/pricing')
+                
+            case "OTHER":
+                response.errors = {
+                    other: RegistrationError.SERVER_ERROR,
+                };
+                return response;
+        }
+    }
 
-//     if (!dbQueryResult.success) {
-//         switch (dbQueryResult.error) {
-//             case "GUEST_NOT_FOUND":
-//                 const { guest_token, cart_id } = await createGuest();
-//                 await setGuestCookies({
-//                     guest_token,
-//                     cart_id,
-//                     progress_step: OnboardingStage.INITIAL
-//                 })
-//                 redirect('/pricing')
-//             case "OTHER":
-//                 response.errors = {
-//                     other: RegistrationError.SERVER_ERROR,
-//                 };
-//                 return response;
-//         }
-//     }
-
-//     redirect("/checkout/payment")
-// }
+    redirect("/checkout/payment")
+}
