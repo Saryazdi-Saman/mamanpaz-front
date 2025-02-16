@@ -5,6 +5,7 @@ enum CredentialsError {
     EMAIL_EXISTS = "EMAIL_EXISTS",
     INVALID_PHONE_NUMBER = "INVALID_PHONE_NUMBER",
     GUEST_NOT_FOUND = "GUEST_NOT_FOUND",
+    PROGRESS_MISMATCH = "PROGRESS_MISMATCH",
     OTHER = "OTHER",
 }
 
@@ -28,7 +29,7 @@ type CredentialsRegisterationSuccess = {
 type CredentialsRegisterationStatus = CredentialsRegisterationError | CredentialsRegisterationSuccess;
 
 export async function addCredentials(input: AddCredentialsInput): Promise<CredentialsRegisterationStatus> {
-    const { success, error, next } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${input.token}/credentials`, {
+    const { success, error, next } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/credentials`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -36,10 +37,12 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
+            token: input.token,
             phone_number: input.phoneNumber,
             password: input.password,
             email: input.email
-        })
+        }),
+        cache: "no-store"
     }).then((res) => res.json());
     if (success) {
         return { success, next };

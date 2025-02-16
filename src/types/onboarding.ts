@@ -8,6 +8,7 @@ export enum RegistrationError {
     EMAIL_EXISTS = "EMAIL_EXISTS",
     SERVER_ERROR = "SERVER_ERROR",
     GUEST_NOT_FOUND = "GUEST_NOT_FOUND",
+    STAGE_MISMATCH = "STAGE_MISMATCH",
 }
 
 export type AddToCartInput = {

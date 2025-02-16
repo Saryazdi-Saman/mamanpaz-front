@@ -1,5 +1,13 @@
 // 'use server'
 
+import { CredentialsActionResponse, CredentialsFormData, OnboardingStage, RegistrationError } from "@/types/onboarding";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { credentialsSchema } from "../validators";
+import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber";
+import { addCredentials } from "../db/guest-account";
+import { createGuest } from "../db/guest-queries";
+
 // import { z } from "zod";
 // import { AddressFormData, AddressFormResponse, CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
 // import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
@@ -10,122 +18,117 @@
 // import { createGuest } from "../db/guest-queries";
 // import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
 
-// export async function submitCredentials(
-//     prevState: CredentialsActionResponse | null,
-//     formData: FormData
-// ): Promise<CredentialsActionResponse> {
+export async function submitCredentials(
+    prevState: CredentialsActionResponse | null,
+    formData: FormData
+): Promise<CredentialsActionResponse> {
 
-//     const cookieStore = await cookies()
-//     const guestToken = cookieStore.get("guest_session")?.value;
+    const cookieStore = await cookies()
+    const guestToken = cookieStore.get("guest_session")?.value;
 
-//     if (!guestToken || guestToken === "") {
-//         redirect("/pricing")
-//     }
+    if (!guestToken || guestToken === "") {
+        redirect("/pricing")
+    }
 
-//     const rawData: CredentialsFormData = {
-//         email: formData.get("email") as string,
-//         phoneNumber: formData.get("phone_number") as string,
-//         password: formData.get("password") as string,
-//     }
+    const rawData: CredentialsFormData = {
+        email: formData.get("email") as string,
+        phoneNumber: formData.get("phone_number") as string,
+        password: formData.get("password") as string,
+    }
 
-//     const response: CredentialsActionResponse = {
-//         hasChanged: true,
-//         inputs: rawData,
-//     }
+    const response: CredentialsActionResponse = {
+        hasChanged: true,
+        inputs: rawData,
+    }
 
-//     const hasSameValue = (
-//         prevState?.inputs?.phoneNumber === rawData.phoneNumber &&
-//         prevState?.inputs?.email === rawData.email &&
-//         prevState?.inputs?.password === rawData.password
-//     )
+    const hasSameValue = (
+        prevState?.inputs?.phoneNumber === rawData.phoneNumber &&
+        prevState?.inputs?.email === rawData.email &&
+        prevState?.inputs?.password === rawData.password
+    )
 
-//     if (hasSameValue) {
-//         response.success = prevState?.success;
-//         response.errors = prevState?.errors;
-//         response.hasChanged = false;
-//         return response;
-//     }
+    if (hasSameValue) {
+        response.success = prevState?.success;
+        response.errors = prevState?.errors;
+        response.hasChanged = false;
+        return response;
+    }
 
-//     //validate the data
-//     const validatedData = credentialsSchema.safeParse(rawData);
-//     if (!validatedData.success) {
-//         response.errors = validatedData.error.flatten().fieldErrors;
-//         return response;
-//     }
+    //validate the data
+    const validatedData = credentialsSchema.safeParse(rawData);
+    if (!validatedData.success) {
+        response.errors = validatedData.error.flatten().fieldErrors;
+        return response;
+    }
 
-//     try {
-//         const phoneNumberUtil = PhoneNumberUtil.getInstance();
-//         const numberObject = phoneNumberUtil.parseAndKeepRawInput(validatedData.data.phoneNumber, 'CA')
-//         const intlNumber = phoneNumberUtil.format(numberObject, PhoneNumberFormat.E164)
-//         const isValid = phoneNumberUtil.isValidNumber(numberObject)
+    try {
+        const phoneNumberUtil = PhoneNumberUtil.getInstance();
+        const numberObject = phoneNumberUtil.parseAndKeepRawInput(validatedData.data.phoneNumber, 'CA')
+        const intlNumber = phoneNumberUtil.format(numberObject, PhoneNumberFormat.E164)
+        const isValid = phoneNumberUtil.isValidNumber(numberObject)
 
-//         if (!isValid) {
-//             response.errors = { phoneNumber: ["Invalid phone number"] };
-//             return response;
-//         }
+        if (!isValid) {
+            response.errors = { phoneNumber: ["Invalid phone number"] };
+            return response;
+        }
 
-//         const result = await addCredentials({
-//             token: guestToken,
-//             phoneNumber: intlNumber,
-//             password: validatedData.data.password,
-//             email: validatedData.data.email,
-//         })
+        const result = await addCredentials({
+            token: guestToken,
+            phoneNumber: intlNumber,
+            password: validatedData.data.password,
+            email: validatedData.data.email,
+        })
 
-//         if (!result.success) {
-//             switch (result.error) {
-//                 case "EMAIL_EXISTS":
-//                     response.errors = {
-//                         other: RegistrationError.EMAIL_EXISTS,
-//                     };
+        if (!result.success) {
+            switch (result.error) {
+                case "EMAIL_EXISTS":
+                    response.errors = { other: RegistrationError.EMAIL_EXISTS, };
 
-//                 case "INVALID_PHONE_NUMBER":
-//                     response.errors = { phoneNumber: ["Invalid phone number"] };
+                case "INVALID_PHONE_NUMBER":
+                    response.errors = { phoneNumber: ["Invalid phone number"] };
 
-//                 case "GUEST_NOT_FOUND":
-//                     const { guest_token, cart_id } = await createGuest();
-//                     await setGuestCookies({
-//                         guest_token,
-//                         cart_id,
-//                         progress_step: OnboardingStage.INITIAL
-//                     })
-//                     response.errors = { other: RegistrationError.GUEST_NOT_FOUND };
+                case "GUEST_NOT_FOUND":
+                    response.errors = { other: RegistrationError.GUEST_NOT_FOUND };
 
-//                 case "OTHER":
-//                     response.errors = { other: RegistrationError.SERVER_ERROR };
+                case "PROGRESS_MISMATCH":
+                    response.errors= { other: RegistrationError.STAGE_MISMATCH}
 
-//                 default:
-//                     response.errors = { other: RegistrationError.SERVER_ERROR };
-//             }
-//         } else {
-//             if (result.next === OnboardingStage.ADDRESS) {
-//                 await setGuestCookies({
-//                     progress_step: OnboardingStage.ADDRESS
-//                 })
-//                 response.success = {
-//                     next: OnboardingStage.ADDRESS
-//                 };
-//             } else {
-//                 await setGuestCookies({
-//                     progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
-//                 })
-//                 response.success = {
-//                     next: OnboardingStage.VERIFY_PHONE_NUMBER
-//                 };
-//             }
-//         }
-//     } catch {
-//         response.errors = { other: RegistrationError.SERVER_ERROR };
-//     } finally {
-//         if (response.success && response.success.next === OnboardingStage.ADDRESS) {
-//             redirect("/checkout/details")
-//         }
-//         if (response.errors && response.errors.other === RegistrationError.GUEST_NOT_FOUND) {
-//             redirect("/pricing")
-//         }
-//         return response;
-//     }
+                case "OTHER":
+                    response.errors = { other: RegistrationError.SERVER_ERROR };
+
+                default:
+                    response.errors = { other: RegistrationError.SERVER_ERROR };
+            }
+        } else {
+            if (result.next === OnboardingStage.ADDRESS) {
+                response.success = {
+                    next: OnboardingStage.ADDRESS
+                };
+            } else {
+                response.success = {
+                    next: OnboardingStage.VERIFY_PHONE_NUMBER
+                };
+            }
+        }
+    } catch {
+        response.errors = { other: RegistrationError.SERVER_ERROR };
+    } finally {
+        if (response.success && response.success.next === OnboardingStage.ADDRESS) {
+            redirect("/checkout/details")
+        }
+        if (response.errors) {
+            if(response.errors.other === RegistrationError.GUEST_NOT_FOUND) redirect("/pricing")
+            if(response.errors.other === RegistrationError.STAGE_MISMATCH) redirect("/pricing")
+        }
+
+        return response;
+    }
+}
+
+
+// function setGuestCookies(arg0: { guest_token: any; cart_id: any; progress_step: any; }) {
+//     throw new Error("Function not implemented.");
 // }
-
 // export async function submitOtp(
 //     input: string
 // ): Promise<OTPActionResponse> {
