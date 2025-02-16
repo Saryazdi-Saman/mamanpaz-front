@@ -3,6 +3,8 @@
 import clsx from 'clsx';
 import { PlusIcon } from 'lucide-react';
 import { useProduct } from './product-context';
+import { useActionState } from 'react';
+import { addToCartAction } from '@/lib/actions/guest';
 
 function SubmitButton({
   availableForSale,
@@ -55,21 +57,19 @@ function SubmitButton({
 
 export function AddToCart() {
   const { selectedPlan } = useProduct();
+  const [message, formAction] = useActionState(addToCartAction, null)
+  const addPlanAction = formAction.bind(null, selectedPlan?.id)
 
   return (
     <form
-      action={async () => {
-        // addCartItem(finalVariant, product);
-        // addItemAction();
-      }}
+      action={addPlanAction}
     >
       <SubmitButton
         availableForSale={true}
         selectedVariantId={selectedPlan?.id}
       />
-      <p aria-live="polite" className="sr-only" role="status">
-        {/* {message} */}
-        THis a message
+      <p aria-live="polite" className="" role="status">
+        {message}
       </p>
     </form>
   );

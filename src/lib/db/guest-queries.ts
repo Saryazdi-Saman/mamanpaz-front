@@ -110,6 +110,32 @@ export async function createGuest(): Promise<string> {
 //     return cart;
 // }
 
+export async function addPlanToGuestCart({
+    guestToken,
+    variantId
+}: {
+    guestToken: string,
+    variantId: string
+}): Promise<string>{
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/add-plan-to-cart`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            variant_id: variantId,
+            guest_token: guestToken,
+        }),
+        cache: "no-cache"
+    })
+
+    const {token} = await result.json() as {token: string}
+
+    return token
+}
+
 // export async function addPlanToCart({
 //     guestToken,
 //     cartId,

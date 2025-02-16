@@ -1,7 +1,8 @@
 'use server'
 
 import { cookies } from "next/headers";
-import { createGuest } from "../db/guest-queries";
+import { addPlanToGuestCart, createGuest } from "../db/guest-queries";
+import { redirect } from "next/navigation";
 // import { redirect } from "next/navigation";
 // import { AddToCartInput, OnboardingStage } from "@/types/onboarding";
 // import { UTM } from "@/types/types";
@@ -10,8 +11,14 @@ import { createGuest } from "../db/guest-queries";
 export async function setGuest(): Promise<void> {
     const guestToken = await createGuest();
     const cookieStore = await cookies();
-    cookieStore.set('guest_session', guestToken)
-    return 
+    cookieStore.set('guest_session', guestToken, {
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30
+    })
+    return
 }
 
 // export async function setGuestCookies({
@@ -60,6 +67,37 @@ export async function setGuest(): Promise<void> {
 //         message: string
 //     }
 // }
+
+export async function addToCartAction(
+    prevState: any,
+    selectedVariantId: string | undefined
+) {
+    if (!selectedVariantId) {
+        return 'Error adding plan to cart'
+    }
+
+    const cookieStore = await cookies();
+    const guestToken = cookieStore.get('guest_session')?.value ?? (await createGuest())
+
+    try {
+        const token = await addPlanToGuestCart({
+            guestToken,
+            variantId: selectedVariantId,
+        })
+
+        if (token !== guestToken) cookieStore.set('guest_session', token, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 30
+        })
+    } catch {
+        return 'Error adding item to cart'
+    }
+
+    redirect('/sign-up')
+}
 
 // export async function addToCart(
 //     prevState: AddToCartState | null,
