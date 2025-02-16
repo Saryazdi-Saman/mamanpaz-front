@@ -32,7 +32,7 @@ export default function AddressAutoFill({
         setPostCode(suggestion.context.postcode.name);
         setCity(suggestion.context.place.name);
         setDistrict(suggestion.context.district?.name ?? '');
-        setCountry(suggestion.context.country.name);
+        setCountry(suggestion.context.country.country_code);
         setNeighborhood(suggestion.context.neighborhood?.name ?? '');
         setRegion(suggestion.context.region.name);
         setSuggestions([]);

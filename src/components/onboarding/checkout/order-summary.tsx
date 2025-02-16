@@ -1,9 +1,9 @@
 import { HttpTypes } from "@medusajs/types"
 
 export default async function OrderSummary({
-    cartPromise
+    cart
 }: {
-    cartPromise: Promise<HttpTypes.StoreCart>
+    cart: HttpTypes.StoreCart
 }) {
     const formatPrice = (amount: number): string => {
         return new Intl.NumberFormat("en-US", {
@@ -12,7 +12,7 @@ export default async function OrderSummary({
         })
             .format(amount)
     }
-    const cart = await cartPromise;
+    
     return (
         <section className="w-full px-4 py-10 space-y-2 rounded-md border-2 border-teal-500 shadow-inner text-blue-500 bg-white 
         sm:px-8 sm:max-w-md">

@@ -96,19 +96,19 @@ export async function createGuest(): Promise<string> {
 //     }
 // }
 
-// export async function getCart(cartId: string): Promise<HttpTypes.StoreCart> {
-//     const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cartId}`, {
-//         method: "GET",
-//         headers: {
-//             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-//         },
-//     })
-//     if (!result.ok) {
-//         redirect('/pricing')
-//     }
-//     const { cart } = await result.json();
-//     return cart;
-// }
+export async function getCart(token: string): Promise<HttpTypes.StoreCart | undefined> {
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/cart`, {
+        method: "GET",
+        headers: {
+            "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+        },
+    })
+    if (!result.ok) {
+        return undefined
+    }
+    const { cart }:{cart: HttpTypes.StoreCart } = await result.json();
+    return cart;
+}
 
 export async function addPlanToGuestCart({
     guestToken,
