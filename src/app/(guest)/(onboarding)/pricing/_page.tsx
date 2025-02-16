@@ -1,29 +1,11 @@
-import { getAvailableDeliveryOptions, getAvailablePlans } from "@/lib/db/store-queries";
+import { getAvailablePlans } from "@/lib/db/store-queries";
 import Plans from "./plans";
 import PlanOptions from "@/components/onboarding/pricing/planOptions";
-import DeliveryScheduleOptions from "@/components/onboarding/pricing/deliveryScheduleOptions";
 import { Toaster } from "@/components/ui/toaster";
 import ScrollToTop from "@/components/ui/scroll-to-top";
 
 export default async function Pricing() {
     const plans = await getAvailablePlans();
-    // const deliveryOptions = await getAvailableDeliveryOptions();
-    // const params = await searchParams;
-
-    // const searchedPlan = params.plan;
-    // const searchedDelivery = params.delivery;
-    // const selectedPlan = {
-    //     slug: searchedPlan ?? plans[0].slug,
-    //     id: plans.find((plan) => plan.slug === searchedPlan)?.product_variant.id ?? plans[0].product_variant.id
-    // }
-    // const selectedDelivery = {
-    //     slug: searchedDelivery ?? deliveryOptions[0].slug,
-    //     id: deliveryOptions.find((delivery) => delivery.slug === searchedDelivery)?.product_variant.id ?? deliveryOptions[0].product_variant.id
-    // }
-    // const selectedPlan = searchedPlan ?? plans[0].slug;
-
-    // const multiplier = plans.find((plan) => plan.slug === selectedPlan.slug)?.meals_per_day ?? 1;
-
     return (
         <section className="min-h-screen md:px-4 py-16 lg:py-24 lg:px-16 w-full bg-teal-50">
             <ScrollToTop />

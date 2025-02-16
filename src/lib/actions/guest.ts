@@ -7,6 +7,13 @@ import { AddToCartInput, OnboardingStage } from "@/types/onboarding";
 import { UTM } from "@/types/types";
 import { submitGuestVisit } from "../db/utm";
 
+export async function setGuest(): Promise<void> {
+    const guestToken = await createGuest();
+    const cookieStore = await cookies();
+    cookieStore.set('guest_session', guestToken)
+    return 
+}
+
 export async function setGuestCookies({
     guest_token,
     cart_id,

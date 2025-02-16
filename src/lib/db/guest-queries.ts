@@ -1,4 +1,4 @@
-import { Guest } from '@/types/onboarding';
+import { Guest, GuestCredentials } from '@/types/onboarding';
 import { redirect } from 'next/navigation';
 import { HttpTypes } from '@medusajs/types'
 import 'server-only'
@@ -17,7 +17,7 @@ type CartResponse = {
     }
 }
 
-export async function getGuest(token: string): Promise<Guest> {
+export async function getGuest(token: string): Promise<GuestCredentials> {
     const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}`, {
         method: "GET",
         credentials: "include",
@@ -35,16 +35,29 @@ export async function getGuest(token: string): Promise<Guest> {
     };
 }
 
-export async function createGuest(): Promise<GuestSessionOutput> {
-    const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
-        method: "GET",
+export async function createGuest(): Promise<string> {
+    const {token} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
+        method: "POST",
         credentials: "include",
         headers: {
             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+            "Content-Type": "application/json"
         },
-    }).then((res) => res.json());
-    return { guest_token: token, cart_id };
+        cache: "no-store"
+    }).then((res) => res.json())
+    return token
 }
+
+// export async function createGuest(): Promise<GuestSessionOutput> {
+//     const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
+//         method: "GET",
+//         credentials: "include",
+//         headers: {
+//             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
+//         },
+//     }).then((res) => res.json());
+//     return { guest_token: token, cart_id };
+// }
 
 export async function validateGuest({
     guestToken,
@@ -68,20 +81,20 @@ export async function validateGuest({
     return { guest_token: token, cart_id };
 }
 
-export async function getGuestSession({
-    guestToken,
-    cartId
-}: {
-    guestToken: string | undefined,
-    cartId: string | undefined
-}): Promise<GuestSessionOutput> {
-    if (guestToken && cartId) {
-        return await validateGuest({ guestToken, cartId });
-    }
-    else {
-        return await createGuest();
-    }
-}
+// export async function getGuestSession({
+//     guestToken,
+//     cartId
+// }: {
+//     guestToken: string | undefined,
+//     cartId: string | undefined
+// }): Promise<GuestSessionOutput> {
+//     if (guestToken && cartId) {
+//         return await validateGuest({ guestToken, cartId });
+//     }
+//     else {
+//         return await createGuest();
+//     }
+// }
 
 export async function getCart(cartId: string): Promise<HttpTypes.StoreCart> {
     const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/carts/${cartId}`, {

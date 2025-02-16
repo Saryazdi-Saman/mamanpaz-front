@@ -58,20 +58,20 @@ function SubmitButton({
 export function AddToCart({ product }: { product: ProductDTO }) {
   const { variants } = product;
 //   const { addCartItem } = useCart();
-  const { state } = useProduct();
+  const { selectedPlan } = useProduct();
 //   const [message, formAction] = useActionState(addItem, null);
 
-  const variant = variants.find((variant: ProductVariantDTO) =>
-    variant.options.every(
-      (option) => option.value === state[option.option?.title.toLowerCase() ?? ""]
-    )
-  );
-  const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-  const selectedVariantId = variant?.id || defaultVariantId;
-//   const addItemAction = formAction.bind(null, selectedVariantId);
-  const finalVariant = variants.find(
-    (variant) => variant.id === selectedVariantId
-  )!;
+//   const variant = variants.find((variant: ProductVariantDTO) =>
+//     variant.options.every(
+//       (option) => option.value === state[option.option?.title.toLowerCase() ?? ""]
+//     )
+//   );
+//   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
+//   const selectedVariantId = variant?.id || defaultVariantId;
+// //   const addItemAction = formAction.bind(null, selectedVariantId);
+//   const finalVariant = variants.find(
+//     (variant) => variant.id === selectedVariantId
+//   )!;
 
   return (
     <form
@@ -82,7 +82,7 @@ export function AddToCart({ product }: { product: ProductDTO }) {
     >
       <SubmitButton
         availableForSale={true}
-        selectedVariantId={selectedVariantId}
+        selectedVariantId={selectedPlan?.id}
       />
       <p aria-live="polite" className="sr-only" role="status">
         {/* {message} */}

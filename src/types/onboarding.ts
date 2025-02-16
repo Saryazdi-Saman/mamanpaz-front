@@ -66,7 +66,12 @@ export enum OnboardingStage {
     COMPLETE = "complete",
 }
 
-export type Guest = {
+export type GuestCredentials = {
     email: string;
     phone_number: string;
+}
+
+export type Guest = {
+    token: string;
+    progress: OnboardingStage
 }
