@@ -1,10 +1,8 @@
 'use client';
 
-import { ProductDTO, ProductVariantDTO } from '@medusajs/types';
 import clsx from 'clsx';
 import { PlusIcon } from 'lucide-react';
-import { useActionState } from 'react';
-import { useProduct } from '../onboarding/pricing/product-context';
+import { useProduct } from './product-context';
 
 function SubmitButton({
   availableForSale,
@@ -55,23 +53,8 @@ function SubmitButton({
   );
 }
 
-export function AddToCart({ product }: { product: ProductDTO }) {
-  const { variants } = product;
-//   const { addCartItem } = useCart();
+export function AddToCart() {
   const { selectedPlan } = useProduct();
-//   const [message, formAction] = useActionState(addItem, null);
-
-//   const variant = variants.find((variant: ProductVariantDTO) =>
-//     variant.options.every(
-//       (option) => option.value === state[option.option?.title.toLowerCase() ?? ""]
-//     )
-//   );
-//   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-//   const selectedVariantId = variant?.id || defaultVariantId;
-// //   const addItemAction = formAction.bind(null, selectedVariantId);
-//   const finalVariant = variants.find(
-//     (variant) => variant.id === selectedVariantId
-//   )!;
 
   return (
     <form
