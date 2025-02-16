@@ -5,6 +5,7 @@ import { PlusIcon } from 'lucide-react';
 import { useProduct } from './product-context';
 import { useActionState } from 'react';
 import { addToCartAction } from '@/lib/actions/guest';
+import { useRouter } from 'next/navigation';
 
 function SubmitButton({
   availableForSale,
@@ -56,6 +57,9 @@ function SubmitButton({
 }
 
 export function AddToCart() {
+  const router = useRouter();
+  router.prefetch('/sign-up');
+  
   const { selectedPlan } = useProduct();
   const [message, formAction] = useActionState(addToCartAction, null)
   const addPlanAction = formAction.bind(null, selectedPlan?.id)
