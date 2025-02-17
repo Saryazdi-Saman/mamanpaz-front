@@ -1,14 +1,11 @@
 'use server'
 
-import { z } from "zod";
 import { AddressFormData, AddressFormResponse, CredentialsActionResponse, CredentialsFormData, OnboardingStage, OTPActionResponse, RegistrationError } from "@/types/onboarding";
-import { PhoneNumberUtil, PhoneNumberFormat } from "google-libphonenumber";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
-import { setGuestCookies } from "./guest";
-import { createGuest } from "../db/guest-queries";
 import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
+import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber";
+import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
 
 export async function submitCredentials(
     prevState: CredentialsActionResponse | null,
@@ -74,21 +71,16 @@ export async function submitCredentials(
         if (!result.success) {
             switch (result.error) {
                 case "EMAIL_EXISTS":
-                    response.errors = {
-                        other: RegistrationError.EMAIL_EXISTS,
-                    };
+                    response.errors = { other: RegistrationError.EMAIL_EXISTS, };
 
                 case "INVALID_PHONE_NUMBER":
                     response.errors = { phoneNumber: ["Invalid phone number"] };
 
                 case "GUEST_NOT_FOUND":
-                    const { guest_token, cart_id } = await createGuest();
-                    await setGuestCookies({
-                        guest_token,
-                        cart_id,
-                        progress_step: OnboardingStage.INITIAL
-                    })
                     response.errors = { other: RegistrationError.GUEST_NOT_FOUND };
+
+                case "PROGRESS_MISMATCH":
+                    response.errors = { other: RegistrationError.STAGE_MISMATCH }
 
                 case "OTHER":
                     response.errors = { other: RegistrationError.SERVER_ERROR };
@@ -98,16 +90,10 @@ export async function submitCredentials(
             }
         } else {
             if (result.next === OnboardingStage.ADDRESS) {
-                await setGuestCookies({
-                    progress_step: OnboardingStage.ADDRESS
-                })
                 response.success = {
                     next: OnboardingStage.ADDRESS
                 };
             } else {
-                await setGuestCookies({
-                    progress_step: OnboardingStage.VERIFY_PHONE_NUMBER
-                })
                 response.success = {
                     next: OnboardingStage.VERIFY_PHONE_NUMBER
                 };
@@ -119,9 +105,11 @@ export async function submitCredentials(
         if (response.success && response.success.next === OnboardingStage.ADDRESS) {
             redirect("/checkout/details")
         }
-        if (response.errors && response.errors.other === RegistrationError.GUEST_NOT_FOUND) {
-            redirect("/pricing")
+        if (response.errors) {
+            if (response.errors.other === RegistrationError.GUEST_NOT_FOUND) redirect("/pricing")
+            if (response.errors.other === RegistrationError.STAGE_MISMATCH) redirect("/pricing")
         }
+
         return response;
     }
 }
@@ -166,9 +154,6 @@ export async function submitOtp(
             }
         }
     } else {
-        await setGuestCookies({
-            progress_step: OnboardingStage.ADDRESS
-        })
         redirect("/checkout/details")
     }
 }
@@ -176,9 +161,6 @@ export async function submitOtp(
 export async function resendOTP() {
     const cookieStore = await cookies()
     const guestToken = cookieStore.get("guest_session")?.value;
-
-    console.log("actions/credentials.ts:resendOTP")
-    console.log("guestToken", guestToken)
 
     if (!guestToken || guestToken === "") {
         redirect("/pricing")
@@ -267,13 +249,11 @@ export async function submitAddressForm(
     if (!dbQueryResult.success) {
         switch (dbQueryResult.error) {
             case "GUEST_NOT_FOUND":
-                const { guest_token, cart_id } = await createGuest();
-                await setGuestCookies({
-                    guest_token,
-                    cart_id,
-                    progress_step: OnboardingStage.INITIAL
-                })
                 redirect('/pricing')
+
+            case "PROGRESS_MISMATCH":
+                redirect('/pricing')
+                
             case "OTHER":
                 response.errors = {
                     other: RegistrationError.SERVER_ERROR,

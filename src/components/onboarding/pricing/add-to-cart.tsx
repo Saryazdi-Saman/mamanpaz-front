@@ -1,10 +1,11 @@
 'use client';
 
-import { ProductDTO, ProductVariantDTO } from '@medusajs/types';
 import clsx from 'clsx';
 import { PlusIcon } from 'lucide-react';
+import { useProduct } from './product-context';
 import { useActionState } from 'react';
-import { useProduct } from '../onboarding/pricing/product-context';
+import { addToCartAction } from '@/lib/actions/guest';
+import { useRouter } from 'next/navigation';
 
 function SubmitButton({
   availableForSale,
@@ -55,38 +56,24 @@ function SubmitButton({
   );
 }
 
-export function AddToCart({ product }: { product: ProductDTO }) {
-  const { variants } = product;
-//   const { addCartItem } = useCart();
-  const { state } = useProduct();
-//   const [message, formAction] = useActionState(addItem, null);
-
-  const variant = variants.find((variant: ProductVariantDTO) =>
-    variant.options.every(
-      (option) => option.value === state[option.option?.title.toLowerCase() ?? ""]
-    )
-  );
-  const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-  const selectedVariantId = variant?.id || defaultVariantId;
-//   const addItemAction = formAction.bind(null, selectedVariantId);
-  const finalVariant = variants.find(
-    (variant) => variant.id === selectedVariantId
-  )!;
+export function AddToCart() {
+  const router = useRouter();
+  router.prefetch('/sign-up');
+  
+  const { selectedPlan } = useProduct();
+  const [message, formAction] = useActionState(addToCartAction, null)
+  const addPlanAction = formAction.bind(null, selectedPlan?.id)
 
   return (
     <form
-      action={async () => {
-        // addCartItem(finalVariant, product);
-        // addItemAction();
-      }}
+      action={addPlanAction}
     >
       <SubmitButton
         availableForSale={true}
-        selectedVariantId={selectedVariantId}
+        selectedVariantId={selectedPlan?.id}
       />
-      <p aria-live="polite" className="sr-only" role="status">
-        {/* {message} */}
-        THis a message
+      <p aria-live="polite" className="" role="status">
+        {message}
       </p>
     </form>
   );

@@ -84,7 +84,10 @@ export async function getAvailablePlans(): Promise<PlanData[]> {
             headers: {
                 "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
             },
-            cache: "force-cache"
+            cache: "force-cache",
+            next: {
+                tags: [TAGS.plan_categories]
+            }
         })
     const { product_categories } = await categoriesResponse.json()
 
@@ -98,7 +101,7 @@ export async function getAvailablePlans(): Promise<PlanData[]> {
             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
         },
         next: {
-            tags: [TAGS.plan_categories]
+            tags: [TAGS.plans]
         },
         cache: "force-cache"
     })
