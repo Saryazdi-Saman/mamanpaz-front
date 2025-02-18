@@ -77,15 +77,15 @@ export async function addToCartAction(
     }
 
     const cookieStore = await cookies();
-    const guestToken = cookieStore.get('guest_session')?.value ?? (await createGuest())
+    const guestId = cookieStore.get('guest_session')?.value ?? (await createGuest())
 
     try {
         const token = await addPlanToGuestCart({
-            guestToken,
+            guestId,
             variantId: selectedVariantId,
         })
 
-        if (token !== guestToken) cookieStore.set('guest_session', token, {
+        if (token !== guestId) cookieStore.set('guest_session', token, {
             path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
