@@ -9,9 +9,9 @@ import { redirect } from "next/navigation";
 // import { submitGuestVisit } from "../db/utm";
 
 export async function setGuest(): Promise<void> {
-    const guestToken = await createGuest();
+    const guestId = await createGuest();
     const cookieStore = await cookies();
-    cookieStore.set('guest_session', guestToken, {
+    cookieStore.set('guest_session', guestId, {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

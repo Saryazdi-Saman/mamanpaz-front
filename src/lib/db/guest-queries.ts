@@ -36,7 +36,7 @@ import 'server-only'
 // }
 
 export async function createGuest(): Promise<string> {
-    const {token} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
+    const {id} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -45,7 +45,7 @@ export async function createGuest(): Promise<string> {
         },
         cache: "no-store"
     }).then((res) => res.json())
-    return token
+    return id
 }
 
 // export async function createGuest(): Promise<GuestSessionOutput> {

@@ -3,15 +3,15 @@
 import { setGuest } from "@/lib/actions/guest";
 import { useEffect } from "react"
 
-export default function GuestInitializer({ guest_token }: { guest_token?: string }) {
+export default function GuestInitializer({ guest_id }: { guest_id?: string }) {
     useEffect(() => {
-        if (!guest_token) {
+        if (!guest_id) {
             setGuest()
                 .catch(error => {
                     console.error('GusetInitializer -> Failed to initialize guest:', error)
                 })
         }
-    }, [guest_token])
+    }, [guest_id])
 
     return null
 }
