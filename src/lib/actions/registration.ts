@@ -13,9 +13,9 @@ export async function submitCredentials(
 ): Promise<CredentialsActionResponse> {
 
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
 
@@ -62,7 +62,7 @@ export async function submitCredentials(
         }
 
         const result = await addCredentials({
-            token: guestToken,
+            guestId,
             phoneNumber: intlNumber,
             password: validatedData.data.password,
             email: validatedData.data.email,
@@ -118,9 +118,9 @@ export async function submitOtp(
     input: string
 ): Promise<OTPActionResponse> {
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
     const rawData: { otp: string } = {
@@ -137,7 +137,7 @@ export async function submitOtp(
     }
 
     const result = await verifyOTP({
-        token: guestToken,
+        guestId,
         otp: validatedData.data.otp
     })
 
@@ -160,13 +160,13 @@ export async function submitOtp(
 
 export async function resendOTP() {
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
 
-    await requestOTPMessage(guestToken)
+    await requestOTPMessage(guestId)
     return
 }
 

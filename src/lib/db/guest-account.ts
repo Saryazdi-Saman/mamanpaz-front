@@ -16,7 +16,7 @@ enum AddressError {
 }
 
 type AddCredentialsInput = {
-    token: string;
+    guestId: string;
     phoneNumber: string;
     password: string;
     email: string;
@@ -43,7 +43,7 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            token: input.token,
+            id: input.guestId,
             phone_number: input.phoneNumber,
             password: input.password,
             email: input.email
@@ -57,9 +57,9 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
     }
 }
 
-export async function requestOTPMessage(token: string): Promise<undefined> {
+export async function requestOTPMessage(guestId: string): Promise<undefined> {
     try {
-        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
+        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/otp`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -78,17 +78,17 @@ type VerifyOTPActionResponse = {
 }
 
 export async function verifyOTP({
-    token,
+    guestId,
     otp
 }: {
-    token: string,
+    guestId: string,
     otp: string
 }): Promise<VerifyOTPActionResponse> {
     const response: VerifyOTPActionResponse = {
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/otp`, {
             method: "POST",
             credentials: "include",
             headers: {
