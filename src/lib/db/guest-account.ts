@@ -1,5 +1,6 @@
 import "server-only";
 import { OnboardingStage } from "@/types/onboarding";
+import { HttpTypes } from "@medusajs/types";
 
 enum CredentialsError {
     EMAIL_EXISTS = "EMAIL_EXISTS",
@@ -118,37 +119,17 @@ type CustomerInfoResponse = {
 }
 
 export async function addCustomerInfo({
-    guestToken,
-    name,
-    lastname,
-    address_line1,
-    address_line2,
-    address_line3,
-    postal_code,
-    city,
-    district,
-    country,
-    neighborhood,
-    region
+    guestId,
+    address,
 }: {
-    guestToken: string,
-    name: string,
-    lastname: string,
-    address_line1: string,
-    address_line2: string,
-    address_line3: string,
-    postal_code: string,
-    city: string,
-    district?: string,
-    country: string,
-    neighborhood?: string,
-    region: string
+    guestId: string;
+    address: HttpTypes.StoreAddAddress
 }): Promise<CustomerInfoResponse> {
     const response:CustomerInfoResponse = {
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestToken}/address`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/address`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -156,17 +137,7 @@ export async function addCustomerInfo({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name,
-                lastname,
-                address_line1,
-                address_line2,
-                address_line3,
-                postal_code,
-                city,
-                district,
-                country,
-                neighborhood,
-                region
+                address
             })
         })
         if (!result.ok) {
