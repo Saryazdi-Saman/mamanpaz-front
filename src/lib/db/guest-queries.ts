@@ -36,7 +36,7 @@ import 'server-only'
 // }
 
 export async function createGuest(): Promise<string> {
-    const {token} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
+    const {id} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -45,7 +45,7 @@ export async function createGuest(): Promise<string> {
         },
         cache: "no-store"
     }).then((res) => res.json())
-    return token
+    return id
 }
 
 // export async function createGuest(): Promise<GuestSessionOutput> {
@@ -111,10 +111,10 @@ export async function getCart(token: string): Promise<HttpTypes.StoreCart | unde
 }
 
 export async function addPlanToGuestCart({
-    guestToken,
+    guestId,
     variantId
 }: {
-    guestToken: string,
+    guestId: string,
     variantId: string
 }): Promise<string>{
     const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/add-plan-to-cart`, {
@@ -126,7 +126,7 @@ export async function addPlanToGuestCart({
         },
         body: JSON.stringify({
             variant_id: variantId,
-            guest_token: guestToken,
+            guest_id: guestId,
         }),
         cache: "no-cache"
     })

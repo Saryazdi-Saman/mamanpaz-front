@@ -7,9 +7,9 @@ import { submitAddressForm } from "@/lib/actions/registration";
 import { useActionState } from "react";
 
 export default function AddressForm({
-    guestToken
+    guestId
 }: {
-    guestToken: string
+    guestId: string
 }) {
     const [state, formAction, isPending] = useActionState(
         submitAddressForm,
@@ -53,7 +53,7 @@ export default function AddressForm({
                 addressError={state.errors?.address_line1}
                 cityError={state.errors?.city}
                 postCodeError={state.errors?.postal_code}
-                guestToken={guestToken}
+                guestId={guestId}
             />
             <div>
                 <label htmlFor="address_line2" className="text-muted-foreground text-sm font-semibold">APARTMENT/SUITE (optional)</label>
@@ -87,6 +87,7 @@ export default function AddressForm({
                 </div>
             }
             <Button
+                disabled={isPending}
                 className=" tracking-wider mt-2 sm:mt-4">
                 Continue to Payment
             </Button>

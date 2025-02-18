@@ -9,9 +9,9 @@ import { redirect } from "next/navigation";
 // import { submitGuestVisit } from "../db/utm";
 
 export async function setGuest(): Promise<void> {
-    const guestToken = await createGuest();
+    const guestId = await createGuest();
     const cookieStore = await cookies();
-    cookieStore.set('guest_session', guestToken, {
+    cookieStore.set('guest_session', guestId, {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -77,15 +77,15 @@ export async function addToCartAction(
     }
 
     const cookieStore = await cookies();
-    const guestToken = cookieStore.get('guest_session')?.value ?? (await createGuest())
+    const guestId = cookieStore.get('guest_session')?.value ?? (await createGuest())
 
     try {
         const token = await addPlanToGuestCart({
-            guestToken,
+            guestId,
             variantId: selectedVariantId,
         })
 
-        if (token !== guestToken) cookieStore.set('guest_session', token, {
+        if (token !== guestId) cookieStore.set('guest_session', token, {
             path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

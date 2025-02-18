@@ -1,5 +1,6 @@
 import "server-only";
 import { OnboardingStage } from "@/types/onboarding";
+import { HttpTypes } from "@medusajs/types";
 
 enum CredentialsError {
     EMAIL_EXISTS = "EMAIL_EXISTS",
@@ -16,7 +17,7 @@ enum AddressError {
 }
 
 type AddCredentialsInput = {
-    token: string;
+    guestId: string;
     phoneNumber: string;
     password: string;
     email: string;
@@ -43,7 +44,7 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            token: input.token,
+            id: input.guestId,
             phone_number: input.phoneNumber,
             password: input.password,
             email: input.email
@@ -57,9 +58,9 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
     }
 }
 
-export async function requestOTPMessage(token: string): Promise<undefined> {
+export async function requestOTPMessage(guestId: string): Promise<undefined> {
     try {
-        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
+        await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/otp`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -78,17 +79,17 @@ type VerifyOTPActionResponse = {
 }
 
 export async function verifyOTP({
-    token,
+    guestId,
     otp
 }: {
-    token: string,
+    guestId: string,
     otp: string
 }): Promise<VerifyOTPActionResponse> {
     const response: VerifyOTPActionResponse = {
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/otp`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/otp`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -118,37 +119,17 @@ type CustomerInfoResponse = {
 }
 
 export async function addCustomerInfo({
-    guestToken,
-    name,
-    lastname,
-    address_line1,
-    address_line2,
-    address_line3,
-    postal_code,
-    city,
-    district,
-    country,
-    neighborhood,
-    region
+    guestId,
+    address,
 }: {
-    guestToken: string,
-    name: string,
-    lastname: string,
-    address_line1: string,
-    address_line2: string,
-    address_line3: string,
-    postal_code: string,
-    city: string,
-    district?: string,
-    country: string,
-    neighborhood?: string,
-    region: string
+    guestId: string;
+    address: HttpTypes.StoreAddAddress
 }): Promise<CustomerInfoResponse> {
     const response:CustomerInfoResponse = {
         success: false,
     }
     try {
-        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestToken}/address`, {
+        const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${guestId}/address`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -156,17 +137,7 @@ export async function addCustomerInfo({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name,
-                lastname,
-                address_line1,
-                address_line2,
-                address_line3,
-                postal_code,
-                city,
-                district,
-                country,
-                neighborhood,
-                region
+                address
             })
         })
         if (!result.ok) {

@@ -6,7 +6,7 @@ import { CookieInitializer } from "../../../components/onboarding/cookieInitiali
 import { Suspense } from "react";
 
 export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
-    const guestTokenCookie = (await cookies()).get('guest_session')?.value;
+    const guestIdCookie = (await cookies()).get('guest_session')?.value;
     const cartIdCookie = (await cookies()).get('cart_id')?.value;
 
     // const session = getGuestSession({

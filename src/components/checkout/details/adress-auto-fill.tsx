@@ -9,12 +9,12 @@ export default function AddressAutoFill({
     addressError,
     cityError,
     postCodeError,
-    guestToken
+    guestId
 }: {
     addressError?: string[],
     cityError?: string[],
     postCodeError?: string[],
-    guestToken: string
+    guestId: string
 }) {
     const [inputValue, setInputValue] = useState('');
     const [postCode, setPostCode] = useState('');
@@ -75,7 +75,7 @@ export default function AddressAutoFill({
             + "&proximity=-79.415612,43.779747"
             + "&types=address"
             + "&limit=3"
-            + `&session_token=${guestToken}`
+            + `&session_token=${guestId}`
             + "&country=CA"
             + `&access_token=${process.env.NEXT_PUBLIC_MAPBOX_TOKEN}`);
         const data: {

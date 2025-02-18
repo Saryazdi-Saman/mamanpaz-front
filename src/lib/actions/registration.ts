@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { addressFormSchema, credentialsSchema, otpSchema } from "../validators";
 import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber";
 import { addCredentials, addCustomerInfo, requestOTPMessage, verifyOTP } from "../db/guest-account";
+import { HttpTypes } from "@medusajs/types";
 
 export async function submitCredentials(
     prevState: CredentialsActionResponse | null,
@@ -13,9 +14,9 @@ export async function submitCredentials(
 ): Promise<CredentialsActionResponse> {
 
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
 
@@ -62,7 +63,7 @@ export async function submitCredentials(
         }
 
         const result = await addCredentials({
-            token: guestToken,
+            guestId,
             phoneNumber: intlNumber,
             password: validatedData.data.password,
             email: validatedData.data.email,
@@ -118,9 +119,9 @@ export async function submitOtp(
     input: string
 ): Promise<OTPActionResponse> {
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
     const rawData: { otp: string } = {
@@ -137,7 +138,7 @@ export async function submitOtp(
     }
 
     const result = await verifyOTP({
-        token: guestToken,
+        guestId,
         otp: validatedData.data.otp
     })
 
@@ -160,13 +161,13 @@ export async function submitOtp(
 
 export async function resendOTP() {
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
 
-    await requestOTPMessage(guestToken)
+    await requestOTPMessage(guestId)
     return
 }
 
@@ -175,9 +176,9 @@ export async function submitAddressForm(
     formData: FormData
 ): Promise<AddressFormResponse> {
     const cookieStore = await cookies()
-    const guestToken = cookieStore.get("guest_session")?.value;
+    const guestId = cookieStore.get("guest_session")?.value;
 
-    if (!guestToken || guestToken === "") {
+    if (!guestId || guestId === "") {
         redirect("/pricing")
     }
 
@@ -230,20 +231,22 @@ export async function submitAddressForm(
         }
         return response;
     }
+    const seperator = rawData.address_line2 && rawData.address_line3 ? ' - ' : ''
+    const address_2 = `${rawData.address_line2}${seperator}${rawData.address_line3}`
+    const address: HttpTypes.StoreAddAddress = {
+        first_name: validatedData.data.name,
+        last_name: validatedData.data.lastname,
+        address_1: validatedData.data.address_line1,
+        address_2,
+        postal_code:validatedData.data.postal_code,
+        city: validatedData.data.city,
+        country_code: rawData.country.toLowerCase(),
+        province: rawData.region
+    };
 
     const dbQueryResult = await addCustomerInfo({
-        guestToken,
-        name: validatedData.data.name,
-        lastname: validatedData.data.lastname,
-        address_line1: validatedData.data.address_line1,
-        address_line2: rawData.address_line2,
-        address_line3: rawData.address_line3,
-        postal_code: validatedData.data.postal_code,
-        city: validatedData.data.city,
-        district: rawData.district,
-        country: rawData.country,
-        neighborhood: rawData.neighborhood,
-        region: rawData.region
+        guestId,
+        address,
     })
 
     if (!dbQueryResult.success) {
