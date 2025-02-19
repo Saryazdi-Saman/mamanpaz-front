@@ -1,39 +1,5 @@
-import { Guest, GuestCredentials } from '@/types/onboarding';
-import { redirect } from 'next/navigation';
 import { HttpTypes } from '@medusajs/types'
 import 'server-only'
-
-// type GuestSessionOutput = {
-//     guest_token: string;
-//     cart_id: string;
-// }
-
-// type CartResponse = {
-//     success?: {
-//         message: string
-//     },
-//     error?: {
-//         message: string
-//     }
-// }
-
-// export async function getGuest(token: string): Promise<GuestCredentials> {
-//     const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest/${token}`, {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-//         },
-//     })
-//     if (!result.ok) {
-//         redirect('/pricing')
-//     }
-//     const { guest } = await result.json();
-//     return {
-//         email: guest.email,
-//         phone_number: guest.phone_number,
-//     };
-// }
 
 export async function createGuest(): Promise<string> {
     const {id} = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests`, {
@@ -48,56 +14,8 @@ export async function createGuest(): Promise<string> {
     return id
 }
 
-// export async function createGuest(): Promise<GuestSessionOutput> {
-//     const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-//         },
-//     }).then((res) => res.json());
-//     return { guest_token: token, cart_id };
-// }
-
-// export async function validateGuest({
-//     guestToken,
-//     cartId
-// }: {
-//     guestToken: string | undefined,
-//     cartId: string | undefined
-// }): Promise<GuestSessionOutput> {
-//     const { token, cart_id } = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guest`, {
-//         method: "POST",
-//         credentials: "include",
-//         headers: {
-//             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify({
-//             token: guestToken,
-//             cart_id: cartId
-//         })
-//     }).then((res) => res.json());
-//     return { guest_token: token, cart_id };
-// }
-
-// export async function getGuestSession({
-//     guestToken,
-//     cartId
-// }: {
-//     guestToken: string | undefined,
-//     cartId: string | undefined
-// }): Promise<GuestSessionOutput> {
-//     if (guestToken && cartId) {
-//         return await validateGuest({ guestToken, cartId });
-//     }
-//     else {
-//         return await createGuest();
-//     }
-// }
-
-export async function getCart(token: string): Promise<HttpTypes.StoreCart | undefined> {
-    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${token}/cart`, {
+export async function getCart(id: string): Promise<HttpTypes.StoreCart | undefined> {
+    const result = await fetch(`${process.env.MEDUSA_BACKEND_URI}/store/guests/${id}/cart`, {
         method: "GET",
         headers: {
             "x-publishable-api-key": `${process.env.MEDUSA_PUBLIC_KEY}`,
@@ -136,7 +54,6 @@ export async function addPlanToGuestCart({
     return token
 }
 
-// export async function addPlanToCart({
 //     guestToken,
 //     cartId,
 //     meal_plan_variant,
@@ -180,4 +97,4 @@ export async function addPlanToGuestCart({
 //             message: "Successfully added to cart"
 //         }
 //     }
-// }
+// }s

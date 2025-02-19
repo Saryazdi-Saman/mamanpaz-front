@@ -51,6 +51,7 @@ export async function addCredentials(input: AddCredentialsInput): Promise<Creden
         }),
         cache: "no-store"
     }).then((res) => res.json());
+    console.log(error)
     if (success) {
         return { success, next };
     } else {

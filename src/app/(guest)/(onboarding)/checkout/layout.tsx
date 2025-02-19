@@ -13,9 +13,9 @@ export default async function CheckoutLayout({
     children: React.ReactNode;
   }>) {
     // const cartID = (await cookies()).get('cart_id')?.value;
-    const guestToken = (await cookies()).get('guest_session')?.value;
-    if (!guestToken) redirect('/pricing');
-    const cart = await getCart(guestToken);
+    const guestId = (await cookies()).get('guest_session')?.value;
+    if (!guestId) redirect('/pricing');
+    const cart = await getCart(guestId);
     if (!cart) redirect('/pricing')
     // if (!cartID || !guestToken) {
     //     redirect('/pricing')
